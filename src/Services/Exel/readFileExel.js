@@ -79,27 +79,15 @@ async function processLargeExcelFromBase64(base64String, sheetName) {
     try {
         // Преобразование Base64 в буфер
         const fileBuffer = Buffer.from(base64String, 'base64');
+        const stream = streamifier.createReadStream(fileBuffer);
 
-        // Проверка типа файла
-        // const fileType = await fileTypeFromBuffer(fileBuffer);
-
-
-        //
-        // if (!fileType || fileType.ext !== 'xlsx') {
-        //     throw new Error('Файл не является корректным Excel (.xlsx) файлом.');
-        // }
-        //
-        // console.log(`Файл проверен: ${fileType.mime} (${fileType.ext})`);
-
-        // Создание "виртуального" ридера для работы с буфером
-        const workbook = new ExcelJS.stream.xlsx.WorkbookReader(fileBuffer, {
+        const workbook = new ExcelJS.stream.xlsx.WorkbookReader(stream, {
             entries: 'emit', // Генерация событий для каждой части
             sharedStrings: 'cache', // Кэширование sharedStrings
             styles: 'cache', // Кэширование стилей
         });
 
-        console.log("work");
-        return;
+
 
         for await (const worksheet of workbook) {
             if (worksheet.name === sheetName) {
