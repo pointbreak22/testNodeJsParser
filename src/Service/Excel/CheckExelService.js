@@ -8,11 +8,9 @@ const CheckCountService = require("./CheckConditions/CheckCountService");
 
 async function runExelCheck(stream, sheetName) {
     const workbook = await new ExcelJS.Workbook();
-
     try {
         // Загружаем поток в Workbook
         await workbook.xlsx.read(stream);
-
         // Получаем нужный лист
         const sheet = await workbook.getWorksheet(sheetName);
         if (!sheet) {
