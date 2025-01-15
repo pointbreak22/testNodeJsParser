@@ -1,11 +1,10 @@
-
-class ProductDTO{
+class ProductDTO {
     #code
     #name
     #trademark
     #articleType
     #articleValue
-    #productValue
+    #productView
     #colorValue
     #targetFloor
     #clothingSizeType
@@ -16,14 +15,12 @@ class ProductDTO{
     #city
     #count
 
-
     get code() {
         return this.#code;
     }
 
     set code(value) {
         this.#code = value;
-        return this;
     }
 
     get name() {
@@ -40,7 +37,6 @@ class ProductDTO{
 
     set trademark(value) {
         this.#trademark = value;
-        return this;
     }
 
     get articleType() {
@@ -49,7 +45,6 @@ class ProductDTO{
 
     set articleType(value) {
         this.#articleType = value;
-        return this;
     }
 
     get articleValue() {
@@ -58,16 +53,15 @@ class ProductDTO{
 
     set articleValue(value) {
         this.#articleValue = value;
-        return this;
     }
 
-    get productValue() {
-        return this.#productValue;
+
+    get productView() {
+        return this.#productView;
     }
 
-    set productValue(value) {
-        this.#productValue = value;
-        return this;
+    set productView(value) {
+        this.#productView = value;
     }
 
     get colorValue() {
@@ -76,7 +70,6 @@ class ProductDTO{
 
     set colorValue(value) {
         this.#colorValue = value;
-        return this;
     }
 
     get targetFloor() {
@@ -85,7 +78,6 @@ class ProductDTO{
 
     set targetFloor(value) {
         this.#targetFloor = value;
-        return this;
     }
 
     get clothingSizeType() {
@@ -94,7 +86,6 @@ class ProductDTO{
 
     set clothingSizeType(value) {
         this.#clothingSizeType = value;
-        return this;
     }
 
     get clothingSizeValue() {
@@ -103,7 +94,6 @@ class ProductDTO{
 
     set clothingSizeValue(value) {
         this.#clothingSizeValue = value;
-        return this;
     }
 
     get composition() {
@@ -112,7 +102,7 @@ class ProductDTO{
 
     set composition(value) {
         this.#composition = value;
-        return this;
+
     }
 
     get code2() {
@@ -121,7 +111,7 @@ class ProductDTO{
 
     set code2(value) {
         this.#code2 = value;
-        return this;
+
     }
 
     get standardNumber() {
@@ -130,8 +120,6 @@ class ProductDTO{
 
     set standardNumber(value) {
         this.#standardNumber = value;
-        return this;
-
     }
 
     get city() {
@@ -140,7 +128,6 @@ class ProductDTO{
 
     set city(value) {
         this.#city = value;
-        return this;
     }
 
     get count() {
@@ -149,9 +136,7 @@ class ProductDTO{
 
     set count(value) {
         this.#count = value;
-        return this;
-
     }
 }
 
-module.exports=ProductDTO;
+module.exports = ProductDTO;

@@ -1,4 +1,4 @@
-const pool=require('../../Services/MySql/MySqlConnectService')
+const pool=require('../../Service/MySql/MySqlConnectService')
 
 async function getData(){
     const [rows]=await pool.query("SELECT * FROM new_table");

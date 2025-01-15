@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const firstRoutes = require('../Controllers/FirstController'); // Первый контроллер
-const secondRoutes = require('../Controllers/SecondController'); // Второй контроллер
+const firstRoutes = require('../Controller/FirstController'); // Первый контроллер
+const secondRoutes = require('../Controller/SecondController'); // Второй контроллер
 
 
 const app = express();

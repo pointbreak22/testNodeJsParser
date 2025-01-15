@@ -1,3 +1,3 @@
-require('../src/Services/MySql/MySqlCoreService')
+require('../src/Service/MySql/MySqlCoreService')
 return;
 

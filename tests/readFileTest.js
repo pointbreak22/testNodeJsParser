@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const readFileService=require('../src/Services/Exel/readFileExel');
+const readFileService=require('../src/Service/Excel/readFileExel');
 
 
 

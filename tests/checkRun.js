@@ -1,5 +1,5 @@
-const checkFullName = require('../src/Services/Exel/CheckConditions/CheckFullNameService');
-const convertBase24Service = require('../src/Services/Exel/ConvertBase24Service')
+const checkFullName = require('../src/Service/CheckServiceCore');
+const convertBase24Service = require('../src/Service/Excel/ConvertBase24Service')
 const path = require("path");
 const fs = require("fs");
 
@@ -11,7 +11,7 @@ const newExcelFilePath = path.join(process.cwd(), 'Public/restored_example.xlsx'
 
 try {
     let base64String = fs.readFileSync(Base64FilePath, 'utf8');
-    checkFullName.checkMore80Symbol(base64String, "Одежда").then((newBase64String)=>{
+    checkFullName.startCheck(base64String, "Одежда").then((newBase64String) => {
         const fileBuffer = Buffer.from(newBase64String, 'base64');
         // Запись буфера в файл Excel
         fs.writeFileSync(newExcelFilePath, fileBuffer);

@@ -1,4 +1,3 @@
-
 const fs = require('fs');
 const path = require('path');
 
@@ -20,7 +19,6 @@ async function convertExcelToBase64(inputFilePath, outputFilePath) {
 }
 
 
-
 //Функция для конвертации Base64 строки в файл Excel
 
 async function convertBase64ToExcel(inputBase64FilePath, outputExcelFilePath) {
@@ -40,7 +38,7 @@ async function convertBase64ToExcel(inputBase64FilePath, outputExcelFilePath) {
 }
 
 
-module.exports={
+module.exports = {
     convertExcelToBase64,
     convertBase64ToExcel,
 }
