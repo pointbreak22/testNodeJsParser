@@ -35,11 +35,17 @@ async function runExelCheck(stream, sheetName) {
 }
 
 function validatingChecks(productDTO) {
-    CheckNameService.checkNameMore80(productDTO.name); // 1
-    CheckModelService.checkTypeArticle(productDTO.articleType); // 3
-    CheckModelService.checkValueArticle(productDTO); // 4
-    CheckCountService.checkCellCount(productDTO.count); //13
+    try {
+        Promise.all([
+            CheckNameService.checkNameMore80(productDTO.name), // 1
+            CheckModelService.checkTypeArticle(productDTO.articleType), // 3
+            CheckModelService.checkValueArticle(productDTO), // 4
+            CheckCountService.checkCellCount(productDTO.count)//13
+        ]).then();
 
+    } catch (error) {
+        console.error("Error:", error);
+    }
 }
 
 
