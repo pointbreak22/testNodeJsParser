@@ -5,7 +5,7 @@ const cellStyleService = require('../CellStyleService');
 async function checkNameMore80(cellName) {
 
     let cellNameValue = valueService.getObjectValue(cellName);
-    if (typeof cellNameValue === 'string' && cellNameValue.length > 50) {
+    if (cellNameValue == null || (typeof cellNameValue === 'string' && cellNameValue.length > 50)) {
         cellStyleService.setError(cellName);
     }
 }

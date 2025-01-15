@@ -4,6 +4,10 @@ const CreateServiceDTO = require("./CreateDTOService");
 const CheckNameService = require("./CheckConditions/CheckNameService");
 const CheckModelService = require("./CheckConditions/CheckArticleService");
 const CheckCountService = require("./CheckConditions/CheckCountService");
+const CheckGenderService = require("./CheckConditions/CheckGenderService");
+
+
+const MySqlCoreService = require("../MySql/MySqlCoreService");
 
 
 async function runExelCheck(stream, sheetName) {
@@ -16,12 +20,16 @@ async function runExelCheck(stream, sheetName) {
         if (!sheet) {
             throw new Error(`Sheet "${sheetName}" not found`);
         }
+
+        const dbData = await MySqlCoreService.fetchData();  // Получаем данные
+
+
         // Перебираем строки, начиная с первой
         sheet.eachRow((row, rowNumber) => {
             //   Начинаем с 8-й строки
             if (rowNumber < 8) return;
             let productDTO = CreateServiceDTO.getProductDTO(row);
-            validatingChecks(productDTO);
+            validatingChecks(productDTO, dbData);
         });
         // Конвертируем Workbook обратно в Base64
         return await workbook.xlsx.writeBuffer();
@@ -32,13 +40,14 @@ async function runExelCheck(stream, sheetName) {
 
 }
 
-function validatingChecks(productDTO) {
+function validatingChecks(productDTO, dbData) {
     try {
         Promise.all([
             CheckNameService.checkNameMore80(productDTO.name), // 1
             CheckModelService.checkTypeArticle(productDTO.articleType), // 3
             CheckModelService.checkValueArticle(productDTO), // 4
-            CheckCountService.checkCellCount(productDTO.count)//13
+            CheckCountService.checkCellCount(productDTO.count),//13
+            CheckGenderService.checkGender(productDTO.targetFloor, dbData.genderData), //7
         ]).then();
 
     } catch (error) {
