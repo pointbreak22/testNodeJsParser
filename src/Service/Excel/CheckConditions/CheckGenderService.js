@@ -16,9 +16,10 @@ async function checkGender(cellGender, genderData) {
 
         if (result !== undefined) {
             cellGender.value = result.rightName;
-
             cellStyleService.setEdit(cellGender);
         }
+    } else {
+        throw new Error('Отсутствуют данные mysql таблицы Гендер');
     }
 }
 

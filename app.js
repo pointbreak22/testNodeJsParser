@@ -7,7 +7,10 @@ const app = express();
 const port = 3000;
 
 // Middleware для обработки JSON
-app.use(bodyParser.json());
+
+// Настройка для увеличения максимального размера тела запроса (например, 50MB)
+app.use(bodyParser.json({limit: '2mb'}));
+app.use(bodyParser.urlencoded({limit: '2mb', extended: true}));
 
 // Подключение маршрутов с разными префиксами
 app.use(getFileRoutes);
