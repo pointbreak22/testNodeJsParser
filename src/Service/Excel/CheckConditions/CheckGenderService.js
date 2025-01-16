@@ -8,15 +8,21 @@ async function checkGender(cellGender, genderData) {
         cellStyleService.setError(cellGender);
         return;
     }
-    //console.log(cellGenderValue);
-    //console.log(genderData, cellGenderValue);
-
     if (genderData && genderData.length > 0) {
-        const result = genderData.find(item => item.shortName === cellGenderValue);
-
+        const result = genderData.find(item => item.value === cellGenderValue);
         if (result !== undefined) {
-            cellGender.value = result.rightName;
-            cellStyleService.setEdit(cellGender);
+            if (result.value.toLowerCase() === 'жен.') {
+                cellGender.value = 'ЖЕНСКИЙ';
+                cellStyleService.setEdit(cellGender);
+            } else if (result.value.toLowerCase() === 'муж.') {
+                cellGender.value = 'МУЖСКОЙ';
+                cellStyleService.setEdit(cellGender);
+            } else if (result.value.toLowerCase() === 'дет.' || result.value.toLowerCase() === 'уни.') {
+                cellGender.value = 'УНИВЕРСАЛЬНЫЙ (УНИСЕКС)';
+                cellStyleService.setEdit(cellGender);
+            }
+        } else {
+            cellStyleService.setError(cellGender);
         }
     } else {
         throw new Error('Отсутствуют данные mysql таблицы Гендер');

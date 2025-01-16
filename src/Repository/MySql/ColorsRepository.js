@@ -1,7 +1,7 @@
 const pool = require('../../Service/MySql/MySqlConnectService')
 
-async function getGenderData() {
-    const [rows] = await pool.query("SELECT * FROM genders");
+async function getColorsData() {
+    const [rows] = await pool.query("SELECT * FROM colors");
 
     // Преобразуем данные из таблицы в список объектов с нужными свойствами
     return await rows.map(row => ({
@@ -11,5 +11,5 @@ async function getGenderData() {
 }
 
 module.exports = {
-    getGenderData
+    getColorsData
 }

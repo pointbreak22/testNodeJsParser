@@ -5,6 +5,9 @@ const CheckNameService = require("./CheckConditions/CheckNameService");
 const CheckModelService = require("./CheckConditions/CheckArticleService");
 const CheckCountService = require("./CheckConditions/CheckCountService");
 const CheckGenderService = require("./CheckConditions/CheckGenderService");
+const CheckTradeMarkService = require("./CheckConditions/CheckTradeMarkService");
+const CheckColorService = require("./CheckConditions/CheckColorService");
+const CheckSizeAdultService = require("./CheckConditions/CheckSizeAdultService");
 
 
 const MySqlCoreService = require("../MySql/MySqlCoreService");
@@ -44,10 +47,14 @@ function validatingChecks(productDTO, dbData) {
     try {
         Promise.all([
             CheckNameService.checkNameMore80(productDTO.name), // 1
+            CheckTradeMarkService.checkTradeMarks(productDTO.trademark, dbData.banedTradeMarkData), //2
             CheckModelService.checkTypeArticle(productDTO.articleType), // 3
             CheckModelService.checkValueArticle(productDTO), // 4
-            CheckCountService.checkCellCount(productDTO.count),//13
+            CheckColorService.checkColor(productDTO.colorValue, dbData.colorsDataResult), //6
             CheckGenderService.checkGender(productDTO.targetFloor, dbData.genderData), //7
+            CheckSizeAdultService.checkSizeAdults(productDTO, dbData.sizesDataResult), //8
+            CheckCountService.checkCellCount(productDTO.count),//13
+
         ]).then();
 
     } catch (error) {
