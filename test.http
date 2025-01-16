@@ -1,0 +1,9 @@
+### Send POST request with json body
+POST http://localhost:3000/check-file
+Content-Type: application/json
+
+
+{
+  "type": "dfknkdfndkdknfkd",
+  "base64": "dskdsknsknsdkdnsks"
+}
