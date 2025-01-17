@@ -23,7 +23,11 @@ fetch('http://localhost:3000/check-file', {
     .then(response => response.json())
     .then(data => {
         try {
-            console.log(data.result);
+            console.log(
+                {
+                    bugs: data.bugs,
+                    errors: data.errors
+                });
             const fileBuffer = Buffer.from(data.base24, 'base64');
             // Запись буфера в файл Excel
             fs.writeFileSync(newExcelFilePath, fileBuffer);

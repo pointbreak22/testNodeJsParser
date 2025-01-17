@@ -12,11 +12,13 @@ async function startCheck(base64String, sheetName) {
     stream.push(buffer);
     stream.push(null); // Сообщаем о завершении потока
 
-    let updatedBuffer;
+    let result = {};
     if (checkExcelFile(buffer)) {
-        updatedBuffer = await CheckExelService.runExelCheck(stream, sheetName);
+        result = await CheckExelService.runExelCheck(stream, sheetName);
     }
-    return updatedBuffer.toString('base64');
+    result.base24 = result.buffer.toString('base64');
+    delete result.buffer;
+    return result;
 }
 
 function checkExcelFile(buffer) {

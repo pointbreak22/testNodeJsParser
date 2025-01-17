@@ -1,5 +1,4 @@
 const ExcelJS = require("exceljs");
-const {Readable} = require('stream');
 const CreateServiceDTO = require("./CreateDTOService");
 const CheckNameService = require("./CheckConditions/CheckNameService");
 const CheckModelService = require("./CheckConditions/CheckArticleService");
@@ -10,6 +9,10 @@ const CheckColorService = require("./CheckConditions/CheckColorService");
 const CheckSizeAdultService = require("./CheckConditions/CheckSizeAdultService");
 
 const MySqlCoreService = require("../MySql/MySqlCoreService");
+const dotenv = require('dotenv')
+dotenv.config()
+
+const MAX_BATCH_SIZE = process.env.MAX_BATCH_SIZE || 10; // Максимальное количество одновременно выполняемых Promises
 
 async function runExelCheck(stream, sheetName) {
     const workbook = await new ExcelJS.Workbook();
@@ -21,26 +24,59 @@ async function runExelCheck(stream, sheetName) {
         if (!sheet) {
             throw new Error(`Sheet "${sheetName}" not found`);
         }
-
         const dbData = await MySqlCoreService.fetchData();  // Получаем данные
-        const rowPromises = []; // Массив для хранения всех промисов
+
+        const rows = [];
+        let bugs = [];
+        let errors = [];
 
         // Перебираем строки, начиная с первой
         sheet.eachRow((row, rowNumber) => {
-            //   Начинаем с 8-й строки
-            if (rowNumber < 8) return;
-            rowPromises.push((async () => {
-                let productDTO = CreateServiceDTO.getProductDTO(row);
-                return await validatingChecks(productDTO, dbData);
-            })());
+            if (rowNumber >= 8) {
+                rows.push(row);
+            }
         });
-        // Конвертируем Workbook обратно в Base64
-        return await workbook.xlsx.writeBuffer();
+
+        // Функция для обработки батча
+        const processBatch = async (batch) => {
+            const promises = batch.map(async (row) => {
+                const productDTO = CreateServiceDTO.getProductDTO(row);
+                return validatingChecks(productDTO, dbData);
+            });
+
+            // Ждём завершения всех промисов в текущем батче
+            return Promise.allSettled(promises);
+        };
+
+        // Разбиваем строки на батчи
+        for (let i = 0; i < rows.length; i += MAX_BATCH_SIZE) {
+            const batch = rows.slice(i, i + MAX_BATCH_SIZE);
+            const results = await processBatch(batch);
+
+            // Обработка результатов текущего батча
+            results.forEach((result, rowIndex) => {
+                if (result.status === "fulfilled") {
+                    bugs.push(...result.value.successResults);
+                    errors.push(...result.value.errors);
+                } else {
+                    errors.push(result.reason);
+                }
+            });
+        }
+
+        bugs = [...new Set(bugs)];
+        errors = [...new Set(errors)];
+
+        let buffer = await workbook.xlsx.writeBuffer();
+        return {
+            buffer: buffer,
+            bugs: bugs,
+            errors: errors,
+        };
     } catch (error) {
         console.error('Ошибка при обработке файла:', error.message);
         throw error;
     }
-
 }
 
 async function validatingChecks(productDTO, dbData) {
@@ -49,7 +85,7 @@ async function validatingChecks(productDTO, dbData) {
     const successResults = [];
 
     try {
-        const promises = [
+        const checks = [
             {name: "№1", promise: CheckNameService.checkNameMore80(productDTO.name)},
             {
                 name: "№2",
@@ -64,22 +100,18 @@ async function validatingChecks(productDTO, dbData) {
         ];
 
         // Запускаем Promise.allSettled
-        const results = await Promise.allSettled(promises.map(p => p.promise));
+        const results = await Promise.allSettled(checks.map(checks => checks.promise));
 
         results.forEach((result, index) => {
-            const promiseMeta = promises[index]; // Получаем соответствующее имя из исходного массива
-            if (result.status === "rejected") {
-                errors.push({
-                    name: promiseMeta.name, // Название метода
-                    error: result.reason,   // Ошибка
-                });
+            const check = checks[index]; // Получаем соответствующее имя из исходного массива
+            if (result.status === "fulfilled") {
+                if (result.value != null && result.value !== '') {
+                    successResults.push(result.value); // Успешные результаты
+                }
             } else {
-                successResults.push(
-                    result.value    // Успешный результат
-                );
+                errors.push(`${check.name}: ${result.reason}`); // Ошибки
             }
         });
-
         return {
             successResults: successResults,
             errors: errors
@@ -87,10 +119,9 @@ async function validatingChecks(productDTO, dbData) {
 
     } catch (error) {
         return {
-            successResults: "Ошибка",
-            errors: errors.message,
+            successResults: [],
+            errors: [error.message || 'Unknown error'],
         };
-
     }
 }
 

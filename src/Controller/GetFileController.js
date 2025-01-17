@@ -11,15 +11,10 @@ router.post('/check-file', async (req, res) => {
         return res.status(400).send('Данные отсутствуют');
     }
 
-    let newBase24 = await CheckServiceCore.startCheck(base64, "Одежда");
-
-    const obj = {
-        result: "some value",
-        base24: newBase24
-    };
+    let result = await CheckServiceCore.startCheck(base64, "Одежда");
 
     // Успешный ответ
-    res.status(200).send(obj);
+    res.status(200).send(result);
 });
 
 module.exports = router;
