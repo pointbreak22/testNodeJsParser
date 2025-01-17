@@ -21,7 +21,6 @@ async function fetchData() {
             sizesDataResult,
         ] = results;
 
-
         // Возвращаем объект, в котором myTableData и genderData - это свойства
         return {
             genderData: genderDataResult.status === 'fulfilled' ? genderDataResult.value : null,

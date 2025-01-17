@@ -9,9 +9,7 @@ const CheckTradeMarkService = require("./CheckConditions/CheckTradeMarkService")
 const CheckColorService = require("./CheckConditions/CheckColorService");
 const CheckSizeAdultService = require("./CheckConditions/CheckSizeAdultService");
 
-
 const MySqlCoreService = require("../MySql/MySqlCoreService");
-
 
 async function runExelCheck(stream, sheetName) {
     const workbook = await new ExcelJS.Workbook();
@@ -25,14 +23,16 @@ async function runExelCheck(stream, sheetName) {
         }
 
         const dbData = await MySqlCoreService.fetchData();  // Получаем данные
-
+        const rowPromises = []; // Массив для хранения всех промисов
 
         // Перебираем строки, начиная с первой
         sheet.eachRow((row, rowNumber) => {
             //   Начинаем с 8-й строки
             if (rowNumber < 8) return;
-            let productDTO = CreateServiceDTO.getProductDTO(row);
-            validatingChecks(productDTO, dbData);
+            rowPromises.push((async () => {
+                let productDTO = CreateServiceDTO.getProductDTO(row);
+                return await validatingChecks(productDTO, dbData);
+            })());
         });
         // Конвертируем Workbook обратно в Base64
         return await workbook.xlsx.writeBuffer();
@@ -43,25 +43,56 @@ async function runExelCheck(stream, sheetName) {
 
 }
 
-function validatingChecks(productDTO, dbData) {
-    try {
-        Promise.all([
-            CheckNameService.checkNameMore80(productDTO.name), // 1
-            CheckTradeMarkService.checkTradeMarks(productDTO.trademark, dbData.banedTradeMarkData), //2
-            CheckModelService.checkTypeArticle(productDTO.articleType), // 3
-            CheckModelService.checkValueArticle(productDTO), // 4
-            CheckColorService.checkColor(productDTO.colorValue, dbData.colorsDataResult), //6
-            CheckGenderService.checkGender(productDTO.targetFloor, dbData.genderData), //7
-            CheckSizeAdultService.checkSizeAdults(productDTO, dbData.sizesDataResult), //8
-            CheckCountService.checkCellCount(productDTO.count),//13
+async function validatingChecks(productDTO, dbData) {
 
-        ]).then();
+    const errors = [];
+    const successResults = [];
+
+    try {
+        const promises = [
+            {name: "№1", promise: CheckNameService.checkNameMore80(productDTO.name)},
+            {
+                name: "№2",
+                promise: CheckTradeMarkService.checkTradeMarks(productDTO.trademark, dbData.banedTradeMarkData)
+            },
+            {name: "№3", promise: CheckModelService.checkTypeArticle(productDTO.articleType)},
+            {name: "№4", promise: CheckModelService.checkValueArticle(productDTO)},
+            {name: "№6", promise: CheckColorService.checkColor(productDTO.colorValue, dbData.colorsDataResult)},
+            {name: "№7", promise: CheckGenderService.checkGender(productDTO.targetFloor, dbData.genderData)},
+            {name: "№8", promise: CheckSizeAdultService.checkSizeAdults(productDTO, dbData.sizesDataResult)},
+            {name: "№13", promise: CheckCountService.checkCellCount(productDTO.count)},
+        ];
+
+        // Запускаем Promise.allSettled
+        const results = await Promise.allSettled(promises.map(p => p.promise));
+
+        results.forEach((result, index) => {
+            const promiseMeta = promises[index]; // Получаем соответствующее имя из исходного массива
+            if (result.status === "rejected") {
+                errors.push({
+                    name: promiseMeta.name, // Название метода
+                    error: result.reason,   // Ошибка
+                });
+            } else {
+                successResults.push(
+                    result.value    // Успешный результат
+                );
+            }
+        });
+
+        return {
+            successResults: successResults,
+            errors: errors
+        };
 
     } catch (error) {
-        console.error("Error:", error);
+        return {
+            successResults: "Ошибка",
+            errors: errors.message,
+        };
+
     }
 }
-
 
 module.exports = {runExelCheck};
 

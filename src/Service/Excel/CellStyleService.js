@@ -10,7 +10,6 @@ const fillGreen = {
     fgColor: {argb: 'F00FF00'}, // Оранжевый цвет
 };
 
-
 function setError(cell) {
     cell.style = {
         ...(cell.style || {}),
@@ -24,6 +23,5 @@ function setEdit(cell) {
         fill: fillGreen,
     };
 }
-
 
 module.exports = {setError, setEdit};

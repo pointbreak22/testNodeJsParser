@@ -55,7 +55,6 @@ class ProductDTO {
         this.#articleValue = value;
     }
 
-
     get productView() {
         return this.#productView;
     }

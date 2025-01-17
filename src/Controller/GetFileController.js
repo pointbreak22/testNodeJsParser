@@ -13,12 +13,10 @@ router.post('/check-file', async (req, res) => {
 
     let newBase24 = await CheckServiceCore.startCheck(base64, "Одежда");
 
-
     const obj = {
         result: "some value",
         base24: newBase24
     };
-
 
     // Успешный ответ
     res.status(200).send(obj);
