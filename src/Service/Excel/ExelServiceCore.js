@@ -1,31 +1,26 @@
 const ExcelJS = require("exceljs");
-const CreateServiceDTO = require("./CreateDTOService");
-const CheckNameService = require("./CheckConditions/CheckNameService");
-const CheckModelService = require("./CheckConditions/CheckArticleService");
-const CheckCountService = require("./CheckConditions/CheckCountService");
-const CheckGenderService = require("./CheckConditions/CheckGenderService");
-const CheckTradeMarkService = require("./CheckConditions/CheckTradeMarkService");
-const CheckColorService = require("./CheckConditions/CheckColorService");
-const CheckSizeAdultService = require("./CheckConditions/CheckSizeAdultService");
-
+const CheckServiceCore = require("./CheckServiceCore");
 const MySqlCoreService = require("../MySql/MySqlCoreService");
 const dotenv = require('dotenv')
 dotenv.config()
 
+const config = require('../../../config.json');
+
 const MAX_BATCH_SIZE = process.env.MAX_BATCH_SIZE || 10; // Максимальное количество одновременно выполняемых Promises
 
-async function runExelCheck(stream, sheetName) {
+async function runExelCheck(stream, type) {
     const workbook = await new ExcelJS.Workbook();
     try {
         // Загружаем поток в Workbook
         await workbook.xlsx.read(stream);
+
+        let configType = getConfigByType(type)
         // Получаем нужный лист
-        const sheet = await workbook.getWorksheet(sheetName);
+        const sheet = await workbook.getWorksheet(configType.tablePage);
         if (!sheet) {
-            throw new Error(`Sheet "${sheetName}" not found`);
+            throw new Error(`Sheet "${configType.tablePage}" not found`);
         }
         const dbData = await MySqlCoreService.fetchData();  // Получаем данные
-
         const rows = [];
         let bugs = [];
         let errors = [];
@@ -40,10 +35,8 @@ async function runExelCheck(stream, sheetName) {
         // Функция для обработки батча
         const processBatch = async (batch) => {
             const promises = batch.map(async (row) => {
-                const productDTO = CreateServiceDTO.getProductDTO(row);
-                return validatingChecks(productDTO, dbData);
+                return validatingChecks(row, dbData, type);
             });
-
             // Ждём завершения всех промисов в текущем батче
             return Promise.allSettled(promises);
         };
@@ -79,26 +72,12 @@ async function runExelCheck(stream, sheetName) {
     }
 }
 
-async function validatingChecks(productDTO, dbData) {
+async function validatingChecks(row, dbData, type) {
 
     const errors = [];
     const successResults = [];
-
     try {
-        const checks = [
-            {name: "№1", promise: CheckNameService.checkNameMore80(productDTO.name)},
-            {
-                name: "№2",
-                promise: CheckTradeMarkService.checkTradeMarks(productDTO.trademark, dbData.banedTradeMarkData)
-            },
-            {name: "№3", promise: CheckModelService.checkTypeArticle(productDTO.articleType)},
-            {name: "№4", promise: CheckModelService.checkValueArticle(productDTO)},
-            {name: "№6", promise: CheckColorService.checkColor(productDTO.colorValue, dbData.colorsDataResult)},
-            {name: "№7", promise: CheckGenderService.checkGender(productDTO.targetFloor, dbData.genderData)},
-            {name: "№8", promise: CheckSizeAdultService.checkSizeAdults(productDTO, dbData.sizesDataResult)},
-            {name: "№13", promise: CheckCountService.checkCellCount(productDTO.count)},
-        ];
-
+        const checks = CheckServiceCore(row, dbData)[type]();
         // Запускаем Promise.allSettled
         const results = await Promise.allSettled(checks.map(checks => checks.promise));
 
@@ -122,6 +101,16 @@ async function validatingChecks(productDTO, dbData) {
             successResults: [],
             errors: [error.message || 'Unknown error'],
         };
+    }
+}
+
+function getConfigByType(type) {
+    const items = config.Items; // Извлекаем объект Items из конфига
+
+    if (items[type]) {
+        return items[type]; // Возвращаем объект для данного типа
+    } else {
+        throw new Error(`Тип "${type}" не найден в конфигурации`);
     }
 }
 

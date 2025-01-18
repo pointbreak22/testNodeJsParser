@@ -1,5 +1,5 @@
 const {Readable} = require('stream');
-const CheckExelService = require('./Excel/CheckExelService');
+const CheckExelService = require('./Excel/ExelServiceCore');
 
 async function startCheck(base64String, sheetName) {
     if (!base64String || typeof base64String !== 'string') {

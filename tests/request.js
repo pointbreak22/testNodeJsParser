@@ -8,15 +8,13 @@ const fileBase64 = fileBuffer.toString('base64');
 
 const newExcelFilePath = path.join(process.cwd(), 'testFiles/restored_example.xlsx'); // Путь для сохранения Excel файла
 
-// const fileBase64 = "base64EncodedStringHere";  // Используйте вашу строку Base64
-
 fetch('http://localhost:3000/check-file', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-        type: 'dfknkdfndkdknfkd',
+        type: 'clothes',
         base64: fileBase64  // Передайте строку Base64
     }),
 })

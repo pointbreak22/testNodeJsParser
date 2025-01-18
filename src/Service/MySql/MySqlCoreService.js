@@ -30,12 +30,7 @@ async function fetchData() {
         };
     } catch (error) {
         console.error('Ошибка при получении данных:', error);
-        return {
-            genderData: null,
-            banedTradeMarkData: null,
-            colorsDataResult: null,
-            sizesDataResult: null,
-        };
+        throw error;
     }
 }
 

@@ -9,10 +9,6 @@ async function checkTypeArticle(cellTypeModel) {
     }
 }
 
-/**
- * Проверяет значение статьи товара
- * @param {ProductDTO} productDTOCells - объект с полями продукта
- */
 async function checkValueArticle(productDTOCells) {
 
     let error = '';

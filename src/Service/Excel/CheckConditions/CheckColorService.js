@@ -15,7 +15,7 @@ async function checkColor(cellColor, colorData) {
         const result = colorData.find(item => item.value === cellColorValue);
         if (result === undefined) {
             cellStyleService.setError(cellColor);
-            error = cellColor.address + ' - значение отсутствует в базе данных цвета';
+            error = cellColor.address + ' - значение отсутствует в базе данных';
         }
     }
     return error;
