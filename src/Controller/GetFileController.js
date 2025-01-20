@@ -2,7 +2,7 @@ const express = require('express');
 const CheckServiceCore = require('../Service/CheckServiceCore');
 const router = express.Router();
 
-// POST /prefix1
+// POST /prefix
 router.post('/check-file', async (req, res) => {
     const {type, base64} = req.body;
     try {
