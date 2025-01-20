@@ -29,6 +29,7 @@ fetch('http://localhost:3000/check-file', {
             const fileBuffer = Buffer.from(data.base24, 'base64');
             // Запись буфера в файл Excel
             fs.writeFileSync(newExcelFilePath, fileBuffer);
+            fs.chmodSync(newExcelFilePath, 0o777);
             console.log(`Файл успешно восстановлен из Base64 и сохранён в: ${newExcelFilePath}`);
         } catch (error) {
             console.error('Error during file processing:', error);

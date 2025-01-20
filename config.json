@@ -1,10 +1,6 @@
 {
   "Items": {
-    "clothes": {
-      "tablePage": "Одежда"
-    },
-    "footwear": {
-      "tablePage": "Обувь"
-    }
+    "clothes": "Одежда",
+    "footwear": "Обувь"
   }
 }

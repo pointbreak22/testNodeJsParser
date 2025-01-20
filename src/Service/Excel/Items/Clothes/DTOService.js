@@ -13,7 +13,7 @@ function getClotheDTO(row) {
         composition: row.getCell(12),   //L
         code2: row.getCell(13),     //M
         standardNumber: row.getCell(14),    //N
-        city: row.getCell(15),     //O
+        country: row.getCell(15),     //O
         count: row.getCell(16),     //P
     };
 }

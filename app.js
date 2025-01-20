@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const getFileRoutes = require('./src/Controller/GetFileController');
 
-
 const app = express();
 const port = 3000;
 
@@ -17,7 +16,7 @@ app.use(getFileRoutes);
 
 // Запуск сервера
 app.listen(port, () => {
-    console.log(`Сервер запущен на http://localhost:${port}`);
+    console.log(`Сервер запущен на порту:${port}`);
 });
 
 

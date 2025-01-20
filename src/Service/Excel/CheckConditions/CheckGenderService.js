@@ -9,7 +9,7 @@ async function checkGender(cellGender, genderData) {
     if (cellGenderValue == null) {
         cellStyleService.setError(cellGender);
         error = cellGender.address + ' - пустое значение';
-        return;
+        return error;
     }
     if (genderData && genderData.length > 0) {
         const result = genderData.find(item => item.value === cellGenderValue);

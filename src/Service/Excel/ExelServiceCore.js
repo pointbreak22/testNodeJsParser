@@ -16,17 +16,17 @@ async function runExelCheck(stream, type) {
 
         let configType = getConfigByType(type)
         // Получаем нужный лист
-        const sheet = await workbook.getWorksheet(configType.tablePage);
-        if (!sheet) {
-            throw new Error(`Sheet "${configType.tablePage}" not found`);
+        const sheetPage = await workbook.getWorksheet(configType);
+        if (!sheetPage) {
+            throw new Error(`Sheet "${sheetPage}" not found`);
         }
-        const dbData = await MySqlCoreService.fetchData();  // Получаем данные
+        const dbData = await MySqlCoreService.fetchData();  // Получаем данные db
         const rows = [];
         let bugs = [];
         let errors = [];
 
         // Перебираем строки, начиная с первой
-        sheet.eachRow((row, rowNumber) => {
+        sheetPage.eachRow((row, rowNumber) => {
             if (rowNumber >= 8) {
                 rows.push(row);
             }
@@ -37,7 +37,7 @@ async function runExelCheck(stream, type) {
             const promises = batch.map(async (row) => {
                 return validatingChecks(row, dbData, type);
             });
-            // Ждём завершения всех промисов в текущем батче
+            // Ждём завершения всех промесив в текущем батче
             return Promise.allSettled(promises);
         };
 
