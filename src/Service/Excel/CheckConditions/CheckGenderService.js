@@ -16,14 +16,15 @@ async function checkGender(cellGender, genderData) {
         if (result !== undefined) {
             if (result.value.toLowerCase() === 'жен.') {
                 cellGender.value = 'ЖЕНСКИЙ';
-                cellStyleService.setEdit(cellGender);
+                //    cellStyleService.setEdit(cellGender);
             } else if (result.value.toLowerCase() === 'муж.') {
                 cellGender.value = 'МУЖСКОЙ';
-                cellStyleService.setEdit(cellGender);
+                //  cellStyleService.setEdit(cellGender);
             } else if (result.value.toLowerCase() === 'дет.' || result.value.toLowerCase() === 'уни.') {
                 cellGender.value = 'УНИВЕРСАЛЬНЫЙ (УНИСЕКС)';
-                cellStyleService.setEdit(cellGender);
+                //cellStyleService.setEdit(cellGender);
             }
+
         } else {
             cellStyleService.setError(cellGender);
             error = cellGender.address + ' - указано не верное значение отсутствующее в бд гендер';

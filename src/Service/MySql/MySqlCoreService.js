@@ -3,6 +3,7 @@ const TradeMarkData = require('../../Repository/MySql/TradeMarkRepository');
 const ColorsData = require('../../Repository/MySql/ColorsRepository')
 const SizeAdultData = require('../../Repository/MySql/SizeAdultRepository')
 const CountryData = require('../../Repository/MySql/CountryRepository')
+const CompositionData = require('../../Repository/MySql/CompositionRepository')
 
 async function fetchData() {
     try {
@@ -12,6 +13,7 @@ async function fetchData() {
             ColorsData.getColorsData(),  //№6 цвета
             SizeAdultData.getSizeAdultData(), // №8 не работает
             CountryData.getCountryData(), //db Country №12
+            CompositionData.getCompositionData(), // db compositions №9
 
         ]);
 
@@ -22,6 +24,7 @@ async function fetchData() {
             colorsDataResult,
             sizesDataResult,
             countriesResult,
+            compositionDataResult,
         ] = results;
 
         // Возвращаем объект, в котором данные таблиц являются свойствами
@@ -31,6 +34,7 @@ async function fetchData() {
             colorsDataResult: colorsDataResult.status === 'fulfilled' ? colorsDataResult.value : null,
             sizesDataResult: sizesDataResult.status === 'fulfilled' ? sizesDataResult.value : null,
             countriesResult: countriesResult.status === 'fulfilled' ? countriesResult.value : null,
+            compositionDataResult: compositionDataResult.status === 'fulfilled' ? compositionDataResult.value : null,
         };
     } catch (error) {
         console.error('Ошибка при получении данных:', error);
