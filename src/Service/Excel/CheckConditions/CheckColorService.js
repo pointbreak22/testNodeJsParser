@@ -1,6 +1,11 @@
 const valueService = require('../ValueService');
 const cellStyleService = require('../CellStyleService');
 
+const dotenv = require('dotenv')
+dotenv.config()
+
+const USE_COMMENTS = process.env.USE_COMMENTS;
+
 async function checkColor(cellColor, colorData) {
 
     let error = ''
@@ -9,13 +14,17 @@ async function checkColor(cellColor, colorData) {
     if (cellColorValue == null) {
         cellStyleService.setError(cellColor);
         error = cellColor.address + ' -  пустое значение';
+        cellColor.note = cellColor.address + ' -  пустое значение';
         return error;
     }
     if (colorData && colorData.length > 0) {
-        const result = colorData.find(item => item.value === cellColorValue);
+        const result = colorData.find(item => item.value.toLowerCase() === cellColorValue.toLowerCase());
         if (result === undefined) {
             cellStyleService.setError(cellColor);
             error = cellColor.address + ' - значение отсутствует в базе данных';
+            if (USE_COMMENTS === true) {
+                cellColor.note = cellColor.address + ' - значение отсутствует в базе данных';
+            }
         }
     }
     return error;

@@ -7,6 +7,7 @@ const CheckSizeAdultService = require("../../CheckConditions/CheckSizeAdultServi
 const CheckCountService = require("../../CheckConditions/CheckCountService");
 const CheckCountryService = require("../../CheckConditions/CheckCountryService");
 const CheckCompositionService = require("../../CheckConditions/CheckCompositionService");
+const CheckTnvedCodesService = require("../../CheckConditions/CheckTnvedCodesService");
 const DTOService = require("./DTOService");
 
 function getClothesChecks(row, dbData) {
@@ -20,11 +21,18 @@ function getClothesChecks(row, dbData) {
         {name: "№3", promise: CheckModelService.checkTypeArticle(clotheDTO.articleType)},
         {name: "№4", promise: CheckModelService.checkValueArticle(clotheDTO)},
         {name: "№6", promise: CheckColorService.checkColor(clotheDTO.colorValue, dbData.colorsDataResult)},
-        {name: "№7", promise: CheckGenderService.checkGender(clotheDTO.targetFloor, dbData.genderData)},
+        {
+            name: "№7",
+            promise: CheckGenderService.checkGender(clotheDTO.targetFloor, clotheDTO.standardNumber, dbData.genderData)
+        },
         {name: "№8", promise: CheckSizeAdultService.checkSizeAdults(clotheDTO, dbData.sizesDataResult)}, //не работает
         {
             name: "№9",
             promise: CheckCompositionService.checkComposition(clotheDTO.composition, dbData.compositionDataResult)
+        },
+        {
+            name: "№10",
+            promise: CheckTnvedCodesService.checkTnvedCodes(clotheDTO, dbData.tnvedCodesDataResult)
         },
 
         {name: "№12", promise: CheckCountryService.checkCountries(clotheDTO.country, dbData.countriesResult)},

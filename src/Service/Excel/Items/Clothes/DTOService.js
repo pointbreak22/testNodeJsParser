@@ -11,7 +11,7 @@ function getClotheDTO(row) {
         clothingSizeType: row.getCell(9),   //I
         clothingSizeValue: row.getCell(10),     //J
         composition: row.getCell(12),   //L
-        code2: row.getCell(13),     //M
+        tnvedCode: row.getCell(13),     //M
         standardNumber: row.getCell(14),    //N
         country: row.getCell(15),     //O
         count: row.getCell(16),     //P

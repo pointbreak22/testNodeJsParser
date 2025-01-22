@@ -15,6 +15,7 @@ async function startCheck(base64String, sheetName) {
     let result = {};
     if (checkExcelFile(buffer)) {
         result = await CheckExelService.runExelCheck(stream, sheetName);
+
     }
     result.base24 = result.buffer.toString('base64');
     delete result.buffer;

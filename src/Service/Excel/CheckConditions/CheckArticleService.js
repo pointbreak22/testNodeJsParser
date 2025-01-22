@@ -22,6 +22,7 @@ async function checkValueArticle(productDTOCells) {
     let articleValue = valueService.getObjectValue(productDTOCells.articleValue);
     if (articleValue == null || list.includes(articleValue)) {
         cellStyleService.setError(productDTOCells.articleValue);
+
         error = productDTOCells.articleValue.address + ' -  пустое или не верное значение';
 
     }

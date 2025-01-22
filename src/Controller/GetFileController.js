@@ -12,6 +12,8 @@ router.post('/check-file', async (req, res) => {
             return res.status(400).send('Данные отсутствуют');
         }
         let result = await CheckServiceCore.startCheck(base64, type);
+        
+        // let result = "успешно";
         // Успешный ответ
         res.status(200).send(result);
     } catch (err) {

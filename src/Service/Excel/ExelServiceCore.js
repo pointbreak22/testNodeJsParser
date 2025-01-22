@@ -4,7 +4,7 @@ const MySqlCoreService = require("../MySql/MySqlCoreService");
 const dotenv = require('dotenv')
 dotenv.config()
 
-const config = require('../../../config.json');
+const configItems = require('../../../config.json').Items;
 
 const MAX_BATCH_SIZE = process.env.MAX_BATCH_SIZE || 10; // Максимальное количество одновременно выполняемых Promises
 
@@ -13,8 +13,8 @@ async function runExelCheck(stream, type) {
     try {
         // Загружаем поток в Workbook
         await workbook.xlsx.read(stream);
-
         let configType = getConfigByType(type)
+
         // Получаем нужный лист
         const sheetPage = await workbook.getWorksheet(configType);
         if (!sheetPage) {
@@ -105,10 +105,8 @@ async function validatingChecks(row, dbData, type) {
 }
 
 function getConfigByType(type) {
-    const items = config.Items; // Извлекаем объект Items из конфига
-
-    if (items[type]) {
-        return items[type]; // Возвращаем объект для данного типа
+    if (configItems[type]) {
+        return configItems[type]; // Возвращаем объект для данного типа
     } else {
         throw new Error(`Тип "${type}" не найден в конфигурации`);
     }

@@ -1,7 +1,8 @@
 const valueService = require('../ValueService');
 const cellStyleService = require('../CellStyleService');
+const configGender = require('../../../../config.json').Gender;
 
-async function checkGender(cellGender, genderData) {
+async function checkGender(cellGender, cellStandardNumber, genderData) {
 
     let error = '';
 
@@ -14,15 +15,16 @@ async function checkGender(cellGender, genderData) {
     if (genderData && genderData.length > 0) {
         const result = genderData.find(item => item.value === cellGenderValue);
         if (result !== undefined) {
-            if (result.value.toLowerCase() === 'жен.') {
-                cellGender.value = 'ЖЕНСКИЙ';
-                //    cellStyleService.setEdit(cellGender);
-            } else if (result.value.toLowerCase() === 'муж.') {
-                cellGender.value = 'МУЖСКОЙ';
-                //  cellStyleService.setEdit(cellGender);
-            } else if (result.value.toLowerCase() === 'дет.' || result.value.toLowerCase() === 'уни.') {
-                cellGender.value = 'УНИВЕРСАЛЬНЫЙ (УНИСЕКС)';
-                //cellStyleService.setEdit(cellGender);
+            if (result.value.toLowerCase().startsWith('дет')) {
+                // cellStandardNumber.value = 'ТР ТС 007/2011 “О безопасности продукции, предназначенной для детей и подростков”';
+                if (configGender[result.value.toLowerCase()]) {
+                    cellGender.value = configGender[result.value.toLowerCase()];
+                }
+            } else {
+                // cellStandardNumber.value = 'ТР ТС 017/2011 "О безопасности продукции легкой промышленности"';
+                if (configGender[result.value.toLowerCase()]) {
+                    cellGender.value = configGender[result.value.toLowerCase()];
+                }
             }
 
         } else {
