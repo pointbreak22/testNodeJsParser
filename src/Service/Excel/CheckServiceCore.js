@@ -4,7 +4,7 @@ const FootwearCheckService = require('./Items/Footwear/CheckService');
 // Определяем объект с методами
 const CheckService = (row, dbData) => ({
     clothes: () => ClothesCheckService.getClothesChecks(row, dbData),
-    footwear: () => FootwearCheckService.getFootwearChecks(row, dbData),
+    // footwear: () => throw new Error(`Неверная категория файла`),
 });
 
 // Экспортируем объект

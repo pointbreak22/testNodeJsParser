@@ -3,18 +3,18 @@ const cellStyleService = require('../CellStyleService');
 
 async function checkSizeAdults(productDTO, sizeAdultData) {
 
-    let error = '';
+    let error;
     let clothingSizeTypeValue = valueService.getObjectValue(productDTO.clothingSizeType);
     let clothingSizeValueValue = valueService.getObjectValue(productDTO.clothingSizeValue);
     if (clothingSizeTypeValue == null) {
         cellStyleService.setError(productDTO.clothingSizeType);
         error = productDTO.clothingSizeType.address + ' - пустое значение';
-        return error;
+        return {error: error};
     }
     if (clothingSizeValueValue == null) {
         cellStyleService.setError(productDTO.clothingSizeValue);
         error = productDTO.clothingSizeValue.address + ' - пустое значение';
-        return error;
+        return {error: error};
     }
 
     if (sizeAdultData && sizeAdultData.length > 0) {
@@ -26,7 +26,7 @@ async function checkSizeAdults(productDTO, sizeAdultData) {
     } else {
         throw new Error('Отсутствуют данные mysql таблицы Тип Одежды');
     }
-    return error;
+    return {error: error};
 
 }
 

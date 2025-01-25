@@ -5,7 +5,7 @@ const configGender = require('../../../../config.json').Gender;
 
 async function checkTnvedCodes(cellsProductDTO, tnvedCodesData) {
 
-    let error = null;
+    let error;
 
     let cellTnvedCodeValue = valueService.getObjectValue(cellsProductDTO.tnvedCode);
     let cellProductViewValue = valueService.getObjectValue(cellsProductDTO.productView);
@@ -14,19 +14,19 @@ async function checkTnvedCodes(cellsProductDTO, tnvedCodesData) {
     if (cellTnvedCodeValue == null) {
         cellStyleService.setError(cellsProductDTO.tnvedCode);
         error = cellsProductDTO.tnvedCode.address + ' - пустое значение';
-        return error;
+        return {error: error};
     }
 
     if (cellTnvedCodeValue.length > 10 || cellTnvedCodeValue.length < 10) {
         cellStyleService.setError(cellsProductDTO.tnvedCode);
         error = cellsProductDTO.tnvedCode.address + ' - количество символов ≠ 10';
-        return error;
+        return {error: error};
     }
 
     if (cellProductViewValue == null) {
         cellStyleService.setError(cellsProductDTO.productView);
         error = cellsProductDTO.productView.address + ' - пустое значение';
-        return error;
+        return {error: error};
     }
 
     if (tnvedCodesData && tnvedCodesData.length > 0) {
@@ -38,14 +38,13 @@ async function checkTnvedCodes(cellsProductDTO, tnvedCodesData) {
             item.gender.toLowerCase().includes(targetFloor.toLowerCase()));
         if (result === undefined) {
 
-            cellsProductDTO.tnvedCode.note = `${result}, ${cellTnvedCodeValue}, ${cellProductViewValue.toLowerCase()}, ${targetFloor.toLowerCase()}`;
             cellStyleService.setError(cellsProductDTO.tnvedCode);
-            error = cellsProductDTO.tnvedCode.address + ' - значение отсутствует в бд или не соответствует условию';
+            error = cellsProductDTO.tnvedCode.address + ' - значение отсутствует в бд "codes_tnved_desc" или не соответствует условию';
         }
     } else {
-        throw new Error('Отсутствуют данные бд таблицы Черный список');
+        throw new Error('Отсутствуют данные бд таблицы "codes_tnved_desc"');
     }
-    return error;
+    return {error: error};
 }
 
 module.exports = {checkTnvedCodes};

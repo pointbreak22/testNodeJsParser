@@ -3,23 +3,23 @@ const cellStyleService = require('../CellStyleService');
 
 async function checkTradeMarks(cellTradeMark, bannedTradeMarkData) {
 
-    let error = null;
+    let error;
     let cellTradeMarkValue = valueService.getObjectValue(cellTradeMark);
     if (cellTradeMarkValue == null) {
         cellStyleService.setError(cellTradeMark);
         error = cellTradeMark.address + ' - пустое значение';
-        return error;
+        return {error: error};
     }
     if (bannedTradeMarkData && bannedTradeMarkData.length > 0) {
-        const result = bannedTradeMarkData.find(item => item.value === cellTradeMarkValue);
+        const result = bannedTradeMarkData.find(item => item.value.toLowerCase() === cellTradeMarkValue.toLowerCase());
         if (result !== undefined) {
             cellStyleService.setError(cellTradeMark);
             error = cellTradeMark.address + ' - значение ' + cellTradeMarkValue + ' в черном списке';
         }
     } else {
-        throw new Error('Отсутствуют данные бд таблицы Черный список');
+        throw new Error('Отсутствуют данные бд таблицы "banned_brands"');
     }
-    return error;
+    return {error: error};
 }
 
 module.exports = {checkTradeMarks};

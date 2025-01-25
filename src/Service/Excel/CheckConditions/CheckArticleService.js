@@ -2,7 +2,7 @@ const valueService = require('../ValueService');
 const cellStyleService = require('../CellStyleService');
 
 async function checkTypeArticle(cellTypeModel) {
-    const list = ['Модель', 'Артикул', 'Модель/Артикул'];
+    const list = ['Модель', 'Артикул', 'Модель/Артикул', 'Модель / Артикул'];
     let typeModelValue = valueService.getObjectValue(cellTypeModel);
     if (typeModelValue == null || (typeof typeModelValue === 'string' && !list.includes(typeModelValue))) {
         cellStyleService.setError(cellTypeModel);
@@ -11,7 +11,7 @@ async function checkTypeArticle(cellTypeModel) {
 
 async function checkValueArticle(productDTOCells) {
 
-    let error = '';
+    let error;
     const list = [
         valueService.getObjectValue(productDTOCells.productView),
         valueService.getObjectValue(productDTOCells.colorValue),
@@ -27,7 +27,7 @@ async function checkValueArticle(productDTOCells) {
 
     }
 
-    return error;
+    return {error: error};
 }
 
 module.exports = {

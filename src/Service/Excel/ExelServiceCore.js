@@ -17,12 +17,15 @@ async function runExelCheck(stream, type) {
 
         // Получаем нужный лист
         const sheetPage = await workbook.getWorksheet(configType);
-        if (!sheetPage) {
-            throw new Error(`Sheet "${sheetPage}" not found`);
+        if (!sheetPage || configType !== "Одежда") {
+            throw new Error(`Не найден лист ${configType}`);
         }
+
         const dbData = await MySqlCoreService.fetchData();  // Получаем данные db
         const rows = [];
-        let bugs = [];
+        //   let bugs = [];
+        let bugEdits = [];
+        let bugErrors = [];
         let errors = [];
 
         // Перебираем строки, начиная с первой
@@ -49,7 +52,15 @@ async function runExelCheck(stream, type) {
             // Обработка результатов текущего батча
             results.forEach((result, rowIndex) => {
                 if (result.status === "fulfilled") {
-                    bugs.push(...result.value.successResults);
+                    const successResults = result.value.successResults;
+                    successResults.forEach((item) => {
+                        if (item.error != null) {
+                            bugErrors.push(item.error);
+                        }
+                        if (item.edit != null) {
+                            bugEdits.push(item.edit);
+                        }
+                    });
                     errors.push(...result.value.errors);
                 } else {
                     errors.push(result.reason);
@@ -57,17 +68,17 @@ async function runExelCheck(stream, type) {
             });
         }
 
-        bugs = [...new Set(bugs)];
+        bugErrors = [...new Set(bugErrors)];
+        bugEdits = [...new Set(bugEdits)];
         errors = [...new Set(errors)];
 
         let buffer = await workbook.xlsx.writeBuffer();
         return {
             buffer: buffer,
-            bugs: bugs,
+            bugs: {errors: bugErrors, edits: bugEdits},
             errors: errors,
         };
     } catch (error) {
-        console.error('Ошибка при обработке файла:', error.message);
         throw error;
     }
 }
@@ -84,7 +95,7 @@ async function validatingChecks(row, dbData, type) {
         results.forEach((result, index) => {
             const check = checks[index]; // Получаем соответствующее имя из исходного массива
             if (result.status === "fulfilled") {
-                if (result.value != null && result.value !== '') {
+                if (result.value != null) {
                     successResults.push(result.value); // Успешные результаты
                 }
             } else {

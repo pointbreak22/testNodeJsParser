@@ -3,12 +3,13 @@ const cellStyleService = require('../CellStyleService');
 
 async function checkComposition(cellComposition, compositionData) {
 
-    let error = null;
+    let error;
+    let edit;
     let cellCompositionValue = valueService.getObjectValue(cellComposition);
     if (cellCompositionValue == null) {
         cellStyleService.setError(cellComposition);
         error = cellComposition.address + ' - пустое значение';
-        return error;
+        return {error: error};
     }
     if (compositionData && compositionData.length > 0) {
         for (const {value, synonyms} of compositionData) {
@@ -29,11 +30,10 @@ async function checkComposition(cellComposition, compositionData) {
             if (newValue !== cellCompositionValue) {
                 cellCompositionValue = newValue;
                 cellComposition.value = cellCompositionValue;
-                //      cellStyleService.setEdit(cellComposition);
+                cellStyleService.setEdit(cellComposition);
             }
         }
 
-        //   for (const {value} of compositionData) {
         // Универсальное регулярное выражение для материалов и процентов
         const percentageRegex = /\d+\s?%/g;
 
@@ -60,17 +60,22 @@ async function checkComposition(cellComposition, compositionData) {
         // Сумма процентов
         let sum = percentages.reduce((acc, curr) => acc + curr, 0);
 
+        if (materialCount === 1 && percentages.length === 0) {
+            cellComposition.value += " 100%";
+            cellStyleService.setEdit(cellComposition);
+            edit = `${cellComposition.address} - значение изменено`;
+
+        }
         // Проверки
-        if (materialCount !== percentages.length || sum % 100 !== 0) {
-            error = `${cellComposition.address} - ошибка в составе, или отсутствует материал в бд`;
+        else if (materialCount !== percentages.length || sum % 100 !== 0) {
+            error = `${cellComposition.address} - ошибка в составе, или отсутствует материал в бд таблицы "compositions"`;
             cellStyleService.setError(cellComposition);
         }
-        //    }
 
     } else {
-        throw new Error('Отсутствуют данные бд таблицы Страны');
+        throw new Error('Отсутствуют данные бд таблицы "compositions"');
     }
-    return error;
+    return {error: error, edit: edit};
 }
 
 module.exports = {checkComposition};

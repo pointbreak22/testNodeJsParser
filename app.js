@@ -8,8 +8,8 @@ const port = 3000;
 // Middleware для обработки JSON
 
 // Настройка для увеличения максимального размера тела запроса (например, 50MB)
-app.use(bodyParser.json({limit: '6mb'}));
-app.use(bodyParser.urlencoded({limit: '6mb', extended: true}));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 // Подключение маршрутов с разными префиксами
 app.use(getFileRoutes);

@@ -1,7 +1,7 @@
-const fillOrange = {
+const fillRed = {
     type: 'pattern',
     pattern: 'solid',
-    fgColor: {argb: 'FFFFA500'}, // Оранжевый цвет
+    fgColor: {argb: 'FFFF0000'}, // Оранжевый цвет
 };
 
 const fillGreen = {
@@ -10,10 +10,14 @@ const fillGreen = {
     fgColor: {argb: 'F00FF00'}, // Оранжевый цвет
 };
 
+const fontBlack = {
+    color: {argb: 'FF000000'}, // Чёрный цвет для текста
+};
+
 function setError(cell) {
     cell.style = {
         ...(cell.style || {}),
-        fill: fillOrange,
+        fill: fillRed,
     };
 }
 
@@ -21,6 +25,7 @@ function setEdit(cell) {
     cell.style = {
         ...(cell.style || {}),
         fill: fillGreen,
+        font: fontBlack,
     };
 }
 
