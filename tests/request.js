@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require("path");
 
 // Чтение файла и конвертация в Base64
-const filePath = path.join(process.cwd(), 'testFiles/testFileExel4.xlsx');  // Укажите путь к файлу
+const filePath = path.join(process.cwd(), 'testFiles/testFileExel2.xlsx');  // Укажите путь к файлу
 const fileBuffer = fs.readFileSync(filePath);
 const fileBase64 = fileBuffer.toString('base64');
 

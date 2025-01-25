@@ -34,8 +34,8 @@ async function checkTnvedCodes(cellsProductDTO, tnvedCodesData) {
         let targetFloor = configGender[cellTargetFloorValue] ? configGender[cellTargetFloorValue] : cellTargetFloorValue;
 
         const result = tnvedCodesData.find(item => item.code.toString() === cellTnvedCodeValue.toString() &&
-            item.typeProduct.toLowerCase().includes(cellProductViewValue.toLowerCase()) &&
-            item.gender.toLowerCase().includes(targetFloor.toLowerCase()));
+            item.typeProduct.toLowerCase().replace(/ё/g, 'е').includes(cellProductViewValue.toLowerCase().replace(/ё/g, 'е')) &&
+            item.gender.toLowerCase().replace(/ё/g, 'е').includes(targetFloor.toLowerCase().replace(/ё/g, 'е')));
         if (result === undefined) {
 
             cellStyleService.setError(cellsProductDTO.tnvedCode);

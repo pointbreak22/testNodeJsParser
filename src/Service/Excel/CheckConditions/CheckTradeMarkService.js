@@ -11,7 +11,7 @@ async function checkTradeMarks(cellTradeMark, bannedTradeMarkData) {
         return {error: error};
     }
     if (bannedTradeMarkData && bannedTradeMarkData.length > 0) {
-        const result = bannedTradeMarkData.find(item => item.value.toLowerCase() === cellTradeMarkValue.toLowerCase());
+        const result = bannedTradeMarkData.find(item => item.value.toLowerCase().replace(/ё/g, 'е') === cellTradeMarkValue.toLowerCase().replace(/ё/g, 'е'));
         if (result !== undefined) {
             cellStyleService.setError(cellTradeMark);
             error = cellTradeMark.address + ' - значение ' + cellTradeMarkValue + ' в черном списке';

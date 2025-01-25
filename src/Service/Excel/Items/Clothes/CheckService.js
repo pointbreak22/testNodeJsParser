@@ -14,7 +14,7 @@ const DTOService = require("./DTOService");
 function getClothesChecks(row, dbData) {
     const clotheDTO = DTOService.getClotheDTO(row);
     return [
-        {name: "№1", promise: CheckNameService.checkNameMore80(clotheDTO.name)},
+        {name: "№1", promise: CheckNameService.checkNameMore80(clotheDTO)},
         {
             name: "№2",
             promise: CheckTradeMarkService.checkTradeMarks(clotheDTO.trademark, dbData.banedTradeMarkData)

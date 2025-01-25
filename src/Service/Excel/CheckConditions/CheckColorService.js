@@ -18,7 +18,7 @@ async function checkColor(cellColor, colorData) {
         return {error: error};
     }
     if (colorData && colorData.length > 0) {
-        const result = colorData.find(item => item.value.toLowerCase() === cellColorValue.toLowerCase());
+        const result = colorData.find(item => item.value.toLowerCase().replace(/ё/g, 'е') === cellColorValue.toLowerCase().replace(/ё/g, 'е'));
         if (result === undefined) {
             cellStyleService.setError(cellColor);
             error = cellColor.address + ' - значение отсутствует в бд "colors"';
