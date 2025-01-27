@@ -13,8 +13,8 @@ async function checkCountries(cellCountry, countryData) {
     if (countryData && countryData.length > 0) {
         const result = countryData.find(item => item.country.toLowerCase().replace(/ё/g, 'е') === cellCountryValue.toLowerCase().replace(/ё/g, 'е'));
         if (result === undefined) {
-            cellStyleService.setError(cellCountryValue);
-            error = cellCountryValue.address + ' - страна ' + cellCountryValue + ' не существует в бд';
+            cellStyleService.setError(cellCountry);
+            error = cellCountry.address + ' - страна ' + cellCountryValue + ' не существует в бд';
         }
     } else {
         throw new Error('Отсутствуют данные бд таблицы "countries"');

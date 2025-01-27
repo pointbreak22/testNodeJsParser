@@ -14,7 +14,6 @@ async function checkColor(cellColor, colorData) {
     if (cellColorValue == null) {
         cellStyleService.setError(cellColor);
         error = cellColor.address + ' -  пустое значение';
-        //  cellColor.note = cellColor.address + ' -  пустое значение';
         return {error: error};
     }
     if (colorData && colorData.length > 0) {

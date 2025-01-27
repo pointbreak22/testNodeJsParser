@@ -3,7 +3,7 @@ const cellStyleService = require('../CellStyleService');
 
 const configGender = require('../../../../config.json').Gender;
 
-async function checkTnvedCodes(cellsProductDTO, tnvedCodesData) {
+async function checkTnvedCodes(cellsProductDTO, tnvedCodesData, isBaby) {
 
     let error;
 

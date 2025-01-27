@@ -26,12 +26,14 @@ async function checkComposition(cellComposition, compositionData) {
                 throw new Error(`${cellComposition.address} - значение не является строкой.`);
             }
             // Заменяем все вхождения синонимов на значение `value`
-            let newValue = cellCompositionValue.replace(regex, value).toLowerCase();
-            if (newValue !== cellCompositionValue) {
+            //  if (value.toLowerCase() !== cellCompositionValue.toLowerCase()) {
+            let newValue = cellCompositionValue.replace(regex, value);
+            if (newValue.toLowerCase() !== cellCompositionValue.toLowerCase()) {
                 cellCompositionValue = newValue;
                 cellComposition.value = cellCompositionValue;
                 cellStyleService.setEdit(cellComposition);
             }
+            // }
         }
 
         // Универсальное регулярное выражение для материалов и процентов

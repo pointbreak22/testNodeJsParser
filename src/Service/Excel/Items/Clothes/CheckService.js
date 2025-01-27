@@ -9,10 +9,15 @@ const CheckCountryService = require("../../CheckConditions/CheckCountryService")
 const CheckCompositionService = require("../../CheckConditions/CheckCompositionService");
 const CheckTnvedCodesService = require("../../CheckConditions/CheckTnvedCodesService");
 const CheckStandartNumberService = require("../../CheckConditions/CheckStandartNumberService");
+const CheckProductViewService = require("../../CheckConditions/CheckProductViewService");
 const DTOService = require("./DTOService");
+
+const CheckAgeTypeService = require("../../CheckConditions/CheckAgeTypeService");
 
 function getClothesChecks(row, dbData) {
     const clotheDTO = DTOService.getClotheDTO(row);
+    const isBaby = CheckAgeTypeService.isBaby(clotheDTO)
+
     return [
         {name: "№1", promise: CheckNameService.checkNameMore80(clotheDTO)},
         {
@@ -21,6 +26,7 @@ function getClothesChecks(row, dbData) {
         },
         {name: "№3", promise: CheckModelService.checkTypeArticle(clotheDTO.articleType)},
         {name: "№4", promise: CheckModelService.checkValueArticle(clotheDTO)},
+        {name: "№5", promise: CheckProductViewService.checkProductView(clotheDTO, dbData.productViewResult, isBaby)},
         {name: "№6", promise: CheckColorService.checkColor(clotheDTO.colorValue, dbData.colorsDataResult)},
         {
             name: "№7",
@@ -33,12 +39,12 @@ function getClothesChecks(row, dbData) {
         },
         {
             name: "№10",
-            promise: CheckTnvedCodesService.checkTnvedCodes(clotheDTO, dbData.tnvedCodesDataResult)
+            promise: CheckTnvedCodesService.checkTnvedCodes(clotheDTO, dbData.tnvedCodesDataResult, isBaby)
         },
 
         {
             name: "№11",
-            promise: CheckStandartNumberService.checkStandard(clotheDTO)
+            promise: CheckStandartNumberService.checkStandard(clotheDTO, isBaby)
         },
 
         {name: "№12", promise: CheckCountryService.checkCountries(clotheDTO.country, dbData.countriesResult)},

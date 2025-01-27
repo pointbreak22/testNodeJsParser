@@ -20,11 +20,17 @@ async function checkValueArticle(productDTOCells) {
         valueService.getObjectValue(productDTOCells.composition),
     ];
     let articleValue = valueService.getObjectValue(productDTOCells.articleValue);
-    if (articleValue == null || list.includes(articleValue)) {
-        cellStyleService.setError(productDTOCells.articleValue);
+    if (articleValue == null) {
+        cellStyleService.setError(productDTOCells.articleValue)
+        error = productDTOCells.articleValue.address + ' -  пустое значение';
+    }
 
-        error = productDTOCells.articleValue.address + ' -  пустое или не верное значение';
-
+    for (let item of list) {
+        if (articleValue.toLowerCase().replace(/ё/g, 'е').includes(item.toLowerCase().replace(/ё/g, 'е'))) {
+            cellStyleService.setError(productDTOCells.articleValue)
+            error = productDTOCells.articleValue.address + ' -  ячейка содержит дублированное значение';
+            break;
+        }
     }
 
     return {error: error};

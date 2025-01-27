@@ -1,6 +1,6 @@
 const valueService = require('../ValueService');
 
-async function isBaby(productDTOCells) {
+function isBaby(productDTOCells) {
     return !!(valueService.getObjectValue(productDTOCells.targetFloor)?.toLowerCase().startsWith('дет') ||
         valueService.getObjectValue(productDTOCells.standardNumber)?.startsWith('ТР ТС 007') ||
         valueService.getObjectValue(productDTOCells.clothingSizeType)?.toUpperCase() === "РОСТ"
