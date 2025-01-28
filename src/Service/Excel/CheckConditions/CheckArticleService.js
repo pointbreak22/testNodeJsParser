@@ -25,14 +25,14 @@ async function checkValueArticle(productDTOCells) {
     }
 
     for (let item of list) {
-        if (valueService.normalizedIncludes(articleValue, item)) {
+        if (item != null && valueService.normalizedIncludes(articleValue, item)) {
             cellStyleService.setError(productDTOCells.articleValue)
             error = productDTOCells.articleValue.address + ' -  ячейка содержит дублированное значение';
             break;
         }
     }
     let color = valueService.getObjectValue(productDTOCells.colorValue);
-    if (valueService.normalizedSliceIncludes(articleValue, color)) {
+    if (color != null && valueService.normalizedSliceIncludes(articleValue, color)) {
         cellStyleService.setError(productDTOCells.articleValue)
         error = productDTOCells.articleValue.address + ' -  ячейка содержит цвет';
     }

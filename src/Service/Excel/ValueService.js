@@ -13,6 +13,10 @@ function compareStrings(str1, str2) {
     return normalize(str1) === normalize(str2);
 }
 
+function anCompareStrings(str1, str2) {
+    return normalize(str1) !== normalize(str2);
+}
+
 function normalizedIncludes(str, substring) {
     return normalize(str).includes(normalize(substring));
 }
@@ -23,4 +27,4 @@ function normalizedSliceIncludes(str, substring) {
     return str.includes(substring);
 }
 
-module.exports = {getObjectValue, compareStrings, normalizedIncludes, normalizedSliceIncludes};
+module.exports = {getObjectValue, anCompareStrings, compareStrings, normalizedIncludes, normalizedSliceIncludes};

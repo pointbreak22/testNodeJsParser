@@ -27,12 +27,12 @@ async function checkComposition(cellComposition, compositionData) {
             }
 
             let newValue = cellCompositionValue.replace(regex, value);
-            if (!valueService.compareStrings(newValue, cellCompositionValue)) {
+            if (valueService.anCompareStrings(newValue, cellCompositionValue)) {
                 cellCompositionValue = newValue;
                 cellComposition.value = cellCompositionValue;
                 cellStyleService.setEdit(cellComposition);
             }
-            cellComposition.value = cellComposition.value.toLowerCase();
+            //   cellComposition.value = cellComposition.value.toLowerCase();
         }
 
         // Универсальное регулярное выражение для материалов и процентов

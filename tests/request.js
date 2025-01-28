@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require("path");
 
 // Чтение файла и конвертация в Base64
-const filePath = path.join(process.cwd(), 'testFiles/testFileExel2.xlsx');  // Укажите путь к файлу
+const filePath = path.join(process.cwd(), 'testFiles/testFileExel6.xlsx');  // Укажите путь к файлу
 const fileBuffer = fs.readFileSync(filePath);
 const fileBase64 = fileBuffer.toString('base64');
 
@@ -30,6 +30,9 @@ fetch('http://localhost:3000/check-file', {
             // Запись буфера в файл Excel
             fs.writeFileSync(newExcelFilePath, fileBuffer);
             fs.chmodSync(newExcelFilePath, 0o777);
+            fs.writeFileSync('testFiles/bugs.txt', JSON.stringify(data.bugs, null, 2)); // сохраняем лог в файл
+            fs.writeFileSync('testFiles/errors.txt', JSON.stringify(data.errors, null, 2)); // сохраняем лог в файл
+
             console.log(`Файл успешно восстановлен из Base64 и сохранён в: ${newExcelFilePath}`);
         } catch (error) {
             console.error('Error during file processing:', error);
