@@ -8,8 +8,6 @@ async function checkStandard(productDTOCells, isBaby) {
 
     let standardNumberValue = valueService.getObjectValue(productDTOCells.standardNumber);
 
-//    console.log(standardNumberValue);
-
     if (isBaby) {
         if (standardNumberValue == null || !standardNumberValue.startsWith("ТР ТС 007")) {
             productDTOCells.standardNumber.value = 'ТР ТС 007/2011 “О ' +

@@ -17,8 +17,8 @@ async function checkProductView(productDTOCells, productViewData, isBaby) {
         return {error: error};
     }
     if (productViewData && productViewData.length > 0) {
-        const result = productViewData.find(item => item.value.toLowerCase().replace(/ё/g, 'е') === cellProductViewValue.toLowerCase().replace(/ё/g, 'е')
-            && item.category.toLowerCase().includes(selectingCategory[isBaby].toLowerCase())
+        const result = productViewData.find(item => valueService.compareStrings(item.value, cellProductViewValue)
+            && valueService.normalizedIncludes(item.category, selectingCategory[isBaby])
         );
         if (result === undefined) {
             cellStyleService.setError(productDTOCells.productView);

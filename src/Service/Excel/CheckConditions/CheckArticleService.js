@@ -14,7 +14,6 @@ async function checkValueArticle(productDTOCells) {
     let error;
     const list = [
         valueService.getObjectValue(productDTOCells.productView),
-        valueService.getObjectValue(productDTOCells.colorValue),
         valueService.getObjectValue(productDTOCells.targetFloor),
         valueService.getObjectValue(productDTOCells.trademark),
         valueService.getObjectValue(productDTOCells.composition),
@@ -26,11 +25,16 @@ async function checkValueArticle(productDTOCells) {
     }
 
     for (let item of list) {
-        if (articleValue.toLowerCase().replace(/ё/g, 'е').includes(item.toLowerCase().replace(/ё/g, 'е'))) {
+        if (valueService.normalizedIncludes(articleValue, item)) {
             cellStyleService.setError(productDTOCells.articleValue)
             error = productDTOCells.articleValue.address + ' -  ячейка содержит дублированное значение';
             break;
         }
+    }
+    let color = valueService.getObjectValue(productDTOCells.colorValue);
+    if (valueService.normalizedSliceIncludes(articleValue, color)) {
+        cellStyleService.setError(productDTOCells.articleValue)
+        error = productDTOCells.articleValue.address + ' -  ячейка содержит цвет';
     }
 
     return {error: error};
