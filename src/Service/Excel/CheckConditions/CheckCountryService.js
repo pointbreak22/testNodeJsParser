@@ -14,7 +14,7 @@ async function checkCountries(cellCountry, countryData, transportDTO) {
             cellStyleService.setError(cellCountry);
             transportDTO.errorService.addBug(cellCountry.address + ' - страна ' + cellCountryValue + ' не существует в бд');
         }
-        if (result.correct != null) {
+        if (result.correct !== undefined && result.correct != null) {
             cellCountry.value = result.correct;
             transportDTO.errorService.addChange(cellCountry.address + ' - значение изменено');
             cellStyleService.setEdit(cellCountry);
