@@ -1,9 +1,8 @@
 const valueService = require('../ValueService');
 const cellStyleService = require('../CellStyleService');
+const ErrorService = require('../ErrorService');
 
 async function checkProductView(productDTOCells, productViewData, isBaby) {
-
-    let error;
 
     const selectingCategory = {
         true: "детский",
@@ -13,8 +12,8 @@ async function checkProductView(productDTOCells, productViewData, isBaby) {
     let cellProductViewValue = valueService.getObjectValue(productDTOCells.productView);
     if (cellProductViewValue == null) {
         cellStyleService.setError(productDTOCells.productView);
-        error = productDTOCells.productView.address + ' - пустое значение';
-        return {error: error};
+        ErrorService.addBug(productDTOCells.productView.address + ' - пустое значение');
+        return;
     }
     if (productViewData && productViewData.length > 0) {
         const result = productViewData.find(item => valueService.compareStrings(item.value, cellProductViewValue)
@@ -22,12 +21,11 @@ async function checkProductView(productDTOCells, productViewData, isBaby) {
         );
         if (result === undefined) {
             cellStyleService.setError(productDTOCells.productView);
-            error = productDTOCells.productView.address + ' - значение не соответствует условию или отсутствует в бд таблицы "types_clothing"';
+            ErrorService.addBug(productDTOCells.productView.address + ' - значение не соответствует условию или отсутствует в бд таблицы "types_clothing"');
         }
     } else {
-        throw new Error('Отсутствуют данные бд таблицы "types_clothing"');
+        ErrorService.addError('Отсутствуют данные бд таблицы "types_clothing"');
     }
-    return {error: error};
 }
 
 module.exports = {checkProductView};

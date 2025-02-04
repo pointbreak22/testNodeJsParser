@@ -1,15 +1,14 @@
 const valueService = require('../ValueService');
 const cellStyleService = require('../CellStyleService');
+const ErrorService = require('../ErrorService');
 
 async function checkComposition(cellComposition, compositionData) {
 
-    let error;
-    let edit;
     let cellCompositionValue = valueService.getObjectValue(cellComposition);
     if (cellCompositionValue == null) {
         cellStyleService.setError(cellComposition);
-        error = cellComposition.address + ' - пустое значение';
-        return {error: error};
+        ErrorService.addBug(cellComposition.address + ' - пустое значение');
+        return;
     }
     if (compositionData && compositionData.length > 0) {
         for (const {value, synonyms} of compositionData) {
@@ -23,7 +22,8 @@ async function checkComposition(cellComposition, compositionData) {
             );
 
             if (typeof cellCompositionValue !== 'string') {
-                throw new Error(`${cellComposition.address} - значение не является строкой.`);
+                ErrorService.addError(`${cellComposition.address} - значение не является строкой.`);
+                return;
             }
 
             let newValue = cellCompositionValue.replace(regex, value);
@@ -64,19 +64,17 @@ async function checkComposition(cellComposition, compositionData) {
         if (materialCount === 1 && percentages.length === 0) {
             cellComposition.value += " 100%";
             cellStyleService.setEdit(cellComposition);
-            edit = `${cellComposition.address} - значение изменено`;
-
+            ErrorService.addChange(`${cellComposition.address} - значение изменено`);
         }
         // Проверки
         else if (materialCount !== percentages.length || sum % 100 !== 0) {
-            error = `${cellComposition.address} - ошибка в составе, или отсутствует материал в бд таблицы "compositions"`;
+            ErrorService.addBug(`${cellComposition.address} - ошибка в составе, или отсутствует материал в бд таблицы "compositions"`);
             cellStyleService.setError(cellComposition);
         }
-
     } else {
-        throw new Error('Отсутствуют данные бд таблицы "compositions"');
+        ErrorService.addError('Отсутствуют данные бд таблицы "compositions"');
     }
-    return {error: error, edit: edit};
+
 }
 
 module.exports = {checkComposition};

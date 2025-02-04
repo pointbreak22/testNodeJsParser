@@ -1,10 +1,8 @@
-const CheckAgeTypeService = require('./CheckAgeTypeService');
 const valueService = require('../ValueService');
 const cellStyleService = require('../CellStyleService');
+const ErrorService = require('../ErrorService');
 
 async function checkStandard(productDTOCells, isBaby) {
-
-    let edit;
 
     let standardNumberValue = valueService.getObjectValue(productDTOCells.standardNumber);
 
@@ -13,7 +11,7 @@ async function checkStandard(productDTOCells, isBaby) {
             productDTOCells.standardNumber.value = 'ТР ТС 007/2011 “О ' +
                 'безопасности продукции, предназначенной для детей и подростков”';
             cellStyleService.setEdit(productDTOCells.standardNumber)
-            edit = productDTOCells.standardNumber.address + " значение изменено";
+            ErrorService.addChange(productDTOCells.standardNumber.address + " значение изменено");
 
         }
 
@@ -22,11 +20,9 @@ async function checkStandard(productDTOCells, isBaby) {
             productDTOCells.standardNumber.value = 'ТР ТС 017/2011 “О ' +
                 'безопасности продукции легкой промышленности”';
             cellStyleService.setEdit(productDTOCells.standardNumber)
-            edit = productDTOCells.standardNumber.address + " значение изменено";
+            ErrorService.addChange(productDTOCells.standardNumber.address + " значение изменено");
         }
     }
-
-    return {edit: edit};
 
 }
 

@@ -5,6 +5,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const configItems = require('../../../config.json').Items;
+const ErrorService = require('./ErrorService');
 
 const MAX_BATCH_SIZE = process.env.MAX_BATCH_SIZE || 10; // Максимальное количество одновременно выполняемых Promises
 
@@ -23,10 +24,6 @@ async function runExelCheck(stream, type) {
 
         const dbData = await MySqlCoreService.fetchData();  // Получаем данные db
         const rows = [];
-        //   let bugs = [];
-        let bugEdits = [];
-        let bugErrors = [];
-        let errors = [];
 
         // Перебираем строки, начиная с первой
         sheetPage.eachRow((row, rowNumber) => {
@@ -52,32 +49,14 @@ async function runExelCheck(stream, type) {
             // Обработка результатов текущего батча
             results.forEach((result, rowIndex) => {
                 if (result.status === "fulfilled") {
-                    const successResults = result.value.successResults;
-                    successResults.forEach((item) => {
-                        if (item.error != null) {
-                            bugErrors.push(item.error);
-                        }
-                        if (item.edit != null) {
-                            bugEdits.push(item.edit);
-                        }
-                    });
-                    errors.push(...result.value.errors);
+
                 } else {
-                    errors.push(result.reason);
+                    ErrorService.addError(result.reason);
                 }
             });
         }
+        return await workbook.xlsx.writeBuffer();
 
-        bugErrors = [...new Set(bugErrors)];
-        bugEdits = [...new Set(bugEdits)];
-        errors = [...new Set(errors)];
-
-        let buffer = await workbook.xlsx.writeBuffer();
-        return {
-            buffer: buffer,
-            bugs: {errors: bugErrors, edits: bugEdits},
-            errors: errors,
-        };
     } catch (error) {
         throw error;
     }
@@ -85,33 +64,20 @@ async function runExelCheck(stream, type) {
 
 async function validatingChecks(row, dbData, type) {
 
-    const errors = [];
-    const successResults = [];
     try {
         const checks = CheckServiceCore(row, dbData)[type]();
         // Запускаем Promise.allSettled
         const results = await Promise.allSettled(checks.map(checks => checks.promise));
-
         results.forEach((result, index) => {
             const check = checks[index]; // Получаем соответствующее имя из исходного массива
             if (result.status === "fulfilled") {
-                if (result.value != null) {
-                    successResults.push(result.value); // Успешные результаты
-                }
             } else {
-                errors.push(`${check.name}: ${result.reason}`); // Ошибки
+                ErrorService.addError(`${check.name}: ${result.reason}`); // Ошибки
             }
         });
-        return {
-            successResults: successResults,
-            errors: errors
-        };
 
     } catch (error) {
-        return {
-            successResults: [],
-            errors: [error.message || 'Unknown error'],
-        };
+        ErrorService.addError(error.message || 'Unknown error');
     }
 }
 

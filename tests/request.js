@@ -15,7 +15,10 @@ fetch('http://localhost:3000/check-file', {
     },
     body: JSON.stringify({
         type: 'clothes',
-        base64: fileBase64  // Передайте строку Base64
+        base64: fileBase64,  // Передайте строку Base64
+        options: {
+            condition_1: "disable",
+        }
     }),
 })
     .then(response => response.json())
@@ -23,14 +26,14 @@ fetch('http://localhost:3000/check-file', {
         try {
             console.log(
                 {
-                    bugs: data.bugs,
+                    log: data.log,
                     errors: data.errors
                 });
-            const fileBuffer = Buffer.from(data.base24, 'base64');
+            const fileBuffer = Buffer.from(data.base64, 'base64');
             // Запись буфера в файл Excel
             fs.writeFileSync(newExcelFilePath, fileBuffer);
             fs.chmodSync(newExcelFilePath, 0o777);
-            fs.writeFileSync('testFiles/bugs.txt', JSON.stringify(data.bugs, null, 2)); // сохраняем лог в файл
+            fs.writeFileSync('testFiles/bugs.txt', JSON.stringify(data.log, null, 2)); // сохраняем лог в файл
             fs.writeFileSync('testFiles/errors.txt', JSON.stringify(data.errors, null, 2)); // сохраняем лог в файл
 
             console.log(`Файл успешно восстановлен из Base64 и сохранён в: ${newExcelFilePath}`);
