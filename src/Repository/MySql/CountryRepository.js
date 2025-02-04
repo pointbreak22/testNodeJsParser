@@ -8,6 +8,7 @@ async function getCountryData() {
         id: row.id,
         code: row.code,
         country: row.country,
+        correct: row.correct,
     }))
 }
 

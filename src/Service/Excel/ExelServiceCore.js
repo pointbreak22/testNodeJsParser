@@ -5,11 +5,10 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const configItems = require('../../../config.json').Items;
-const ErrorService = require('./ErrorService');
 
 const MAX_BATCH_SIZE = process.env.MAX_BATCH_SIZE || 10; // Максимальное количество одновременно выполняемых Promises
 
-async function runExelCheck(stream, type) {
+async function runExelCheck(stream, type, transportDTO) {
     const workbook = await new ExcelJS.Workbook();
     try {
         // Загружаем поток в Workbook
@@ -35,7 +34,7 @@ async function runExelCheck(stream, type) {
         // Функция для обработки батча
         const processBatch = async (batch) => {
             const promises = batch.map(async (row) => {
-                return validatingChecks(row, dbData, type);
+                return validatingChecks(row, dbData, type, transportDTO);
             });
             // Ждём завершения всех промесив в текущем батче
             return Promise.allSettled(promises);
@@ -51,7 +50,7 @@ async function runExelCheck(stream, type) {
                 if (result.status === "fulfilled") {
 
                 } else {
-                    ErrorService.addError(result.reason);
+                    transportDTO.errorService.addError(result.reason);
                 }
             });
         }
@@ -62,22 +61,22 @@ async function runExelCheck(stream, type) {
     }
 }
 
-async function validatingChecks(row, dbData, type) {
+async function validatingChecks(row, dbData, type, transportDTO) {
 
     try {
-        const checks = CheckServiceCore(row, dbData)[type]();
+        const checks = CheckServiceCore(row, dbData, transportDTO)[type]();
         // Запускаем Promise.allSettled
         const results = await Promise.allSettled(checks.map(checks => checks.promise));
         results.forEach((result, index) => {
             const check = checks[index]; // Получаем соответствующее имя из исходного массива
             if (result.status === "fulfilled") {
             } else {
-                ErrorService.addError(`${check.name}: ${result.reason}`); // Ошибки
+                transportDTO.errorService.addError(`${check.name}: ${result.reason}`); // Ошибки
             }
         });
 
     } catch (error) {
-        ErrorService.addError(error.message || 'Unknown error');
+        transportDTO.errorService.addError(error.message || 'Unknown error');
     }
 }
 

@@ -1,8 +1,9 @@
 const valueService = require('../ValueService');
 const cellStyleService = require('../CellStyleService');
-const ErrorService = require('../ErrorService');
 
-async function checkTypeArticle(cellTypeModel) {
+// const transportDTO.errorService = require('../transportDTO.errorService');
+
+async function checkTypeArticle(cellTypeModel, transportDTO) {
     const list = ['Модель', 'Артикул', 'Модель/Артикул', 'Модель / Артикул'];
     let typeModelValue = valueService.getObjectValue(cellTypeModel);
     if (typeModelValue == null || (typeof typeModelValue === 'string' && !list.includes(typeModelValue))) {
@@ -10,7 +11,7 @@ async function checkTypeArticle(cellTypeModel) {
     }
 }
 
-async function checkValueArticle(productDTOCells) {
+async function checkValueArticle(productDTOCells, transportDTO) {
 
     const list = [
         valueService.getObjectValue(productDTOCells.productView),
@@ -21,20 +22,20 @@ async function checkValueArticle(productDTOCells) {
     let articleValue = valueService.getObjectValue(productDTOCells.articleValue);
     if (articleValue == null) {
         cellStyleService.setError(productDTOCells.articleValue)
-        ErrorService.addBug(productDTOCells.articleValue.address + ' -  пустое значение');
+        transportDTO.errorService.addBug(productDTOCells.articleValue.address + ' -  пустое значение');
     }
 
     for (let item of list) {
         if (item != null && valueService.normalizedIncludes(articleValue, item)) {
             cellStyleService.setError(productDTOCells.articleValue)
-            ErrorService.addBug(productDTOCells.articleValue.address + ' -  ячейка содержит дублированное значение');
+            transportDTO.errorService.addBug(productDTOCells.articleValue.address + ' -  ячейка содержит дублированное значение');
             break;
         }
     }
     let color = valueService.getObjectValue(productDTOCells.colorValue);
     if (color != null && valueService.normalizedSliceIncludes(articleValue, color)) {
         cellStyleService.setError(productDTOCells.articleValue)
-        ErrorService.addBug(productDTOCells.articleValue.address + ' -  ячейка содержит цвет');
+        transportDTO.errorService.addBug(productDTOCells.articleValue.address + ' -  ячейка содержит цвет');
     }
 }
 

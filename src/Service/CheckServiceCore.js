@@ -1,7 +1,7 @@
 const {Readable} = require('stream');
 const CheckExelService = require('./Excel/ExelServiceCore');
 
-async function startCheck(base64String, sheetName) {
+async function startCheck(base64String, sheetName, transportDTO) {
     try {
         if (!base64String || typeof base64String !== 'string') {
             throw new Error('Invalid Base64 string');
@@ -14,7 +14,7 @@ async function startCheck(base64String, sheetName) {
         stream.push(null); // Сообщаем о завершении потока
 
         if (checkExcelFile(buffer)) {
-            buffer = await CheckExelService.runExelCheck(stream, sheetName);
+            buffer = await CheckExelService.runExelCheck(stream, sheetName, transportDTO);
         }
         return buffer.toString('base64');
     } catch (error) {

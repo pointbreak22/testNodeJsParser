@@ -1,13 +1,14 @@
 const valueService = require('../ValueService');
 const cellStyleService = require('../CellStyleService');
-const ErrorService = require('../ErrorService');
 
-async function checkComposition(cellComposition, compositionData) {
+// const transportDTO.errorService = require('../transportDTO.errorService');
+
+async function checkComposition(cellComposition, compositionData, transportDTO) {
 
     let cellCompositionValue = valueService.getObjectValue(cellComposition);
     if (cellCompositionValue == null) {
         cellStyleService.setError(cellComposition);
-        ErrorService.addBug(cellComposition.address + ' - пустое значение');
+        transportDTO.errorService.addBug(cellComposition.address + ' - пустое значение');
         return;
     }
     if (compositionData && compositionData.length > 0) {
@@ -22,7 +23,7 @@ async function checkComposition(cellComposition, compositionData) {
             );
 
             if (typeof cellCompositionValue !== 'string') {
-                ErrorService.addError(`${cellComposition.address} - значение не является строкой.`);
+                transportDTO.errorService.addError(`${cellComposition.address} - значение не является строкой.`);
                 return;
             }
 
@@ -64,15 +65,15 @@ async function checkComposition(cellComposition, compositionData) {
         if (materialCount === 1 && percentages.length === 0) {
             cellComposition.value += " 100%";
             cellStyleService.setEdit(cellComposition);
-            ErrorService.addChange(`${cellComposition.address} - значение изменено`);
+            transportDTO.errorService.addChange(`${cellComposition.address} - значение изменено`);
         }
         // Проверки
         else if (materialCount !== percentages.length || sum % 100 !== 0) {
-            ErrorService.addBug(`${cellComposition.address} - ошибка в составе, или отсутствует материал в бд таблицы "compositions"`);
+            transportDTO.errorService.addBug(`${cellComposition.address} - ошибка в составе, или отсутствует материал в бд таблицы "compositions"`);
             cellStyleService.setError(cellComposition);
         }
     } else {
-        ErrorService.addError('Отсутствуют данные бд таблицы "compositions"');
+        transportDTO.errorService.addError('Отсутствуют данные бд таблицы "compositions"');
     }
 
 }

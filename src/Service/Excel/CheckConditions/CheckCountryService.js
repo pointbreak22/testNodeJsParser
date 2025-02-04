@@ -1,22 +1,27 @@
 const valueService = require('../ValueService');
 const cellStyleService = require('../CellStyleService');
-const ErrorService = require('../ErrorService');
 
-async function checkCountries(cellCountry, countryData) {
+async function checkCountries(cellCountry, countryData, transportDTO) {
     let cellCountryValue = valueService.getObjectValue(cellCountry);
     if (cellCountryValue == null) {
         cellStyleService.setError(cellCountry);
-        ErrorService.addBug(cellCountry.address + ' - пустое значение');
+        transportDTO.errorService.addBug(cellCountry.address + ' - пустое значение');
         return;
     }
     if (countryData && countryData.length > 0) {
         const result = countryData.find(item => valueService.compareStrings(item.country, cellCountryValue));
         if (result === undefined) {
             cellStyleService.setError(cellCountry);
-            ErrorService.addBug(cellCountry.address + ' - страна ' + cellCountryValue + ' не существует в бд');
+            transportDTO.errorService.addBug(cellCountry.address + ' - страна ' + cellCountryValue + ' не существует в бд');
+        }
+        if (result.correct != null) {
+            cellCountry.value = result.correct;
+            transportDTO.errorService.addChange(cellCountry.address + ' - значение изменено');
+            cellStyleService.setEdit(cellCountry);
+
         }
     } else {
-        ErrorService.addError('Отсутствуют данные бд таблицы "countries"');
+        transportDTO.errorService.addError('Отсутствуют данные бд таблицы "countries"');
     }
 }
 

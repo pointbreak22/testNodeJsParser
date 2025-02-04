@@ -1,29 +1,45 @@
 const valueService = require('../ValueService');
 const cellStyleService = require('../CellStyleService');
-const ErrorService = require('../ErrorService');
 
-async function checkNameMore80(productDTOCells) {
+const OptionService = require('../OptionService');
+
+const FormulaParser = require('fast-formula-parser');
+const formula = require('formulajs');
+const parser = new FormulaParser();
+
+async function checkNameMore80(productDTOCells, transportDTO) {
+
+    if (OptionService.isDisable(transportDTO.options, "№1")) {
+        return
+    }
+
     let cellNameValue = valueService.getObjectValue(productDTOCells.name);
     if (cellNameValue == null || cellNameValue === "") {
         cellStyleService.setError(productDTOCells.name);
-        ErrorService.addBug(productDTOCells.name.address + ' - пустое значение');
+        transportDTO.errorService.addBug(productDTOCells.name.address + ' - пустое значение');
     }
-    let formulaExel = "";
-    if (productDTOCells.name.value instanceof Object && productDTOCells.name.value.formula != null) {
-        formulaExel = productDTOCells.name.value.formula;
-    }
-    let myFormula = `CONCATENATE(${productDTOCells.productView.address}," ", ${productDTOCells.trademark.address}," ",${productDTOCells.targetFloor.address}," ",${productDTOCells.articleType.address}," ", ${productDTOCells.articleValue.address}, " цвет ", ${productDTOCells.colorValue.address}, " р. ", ${productDTOCells.clothingSizeValue.address})`;
-    if (formulaExel !== myFormula) {
-        cellStyleService.setEdit(productDTOCells.name);
-        ErrorService.addChange(productDTOCells.name.address + " значение изменено");
+    // let formulaExel = "";
+    // if (productDTOCells.name.value instanceof Object && productDTOCells.name.value.formula != null) {
+    //     formulaExel = productDTOCells.name.value.formula;
+    // }
+    //   let myFormula = `CONCATENATE(${valueService.getObjectValue(productDTOCells.productView)}," ", ${valueService.getObjectValue(productDTOCells.trademark)}," ",${valueService.getObjectValue(productDTOCells.targetFloor)}," ",${valueService.getObjectValue(productDTOCells.articleType)}," ", ${valueService.getObjectValue(productDTOCells.articleValue)}, " цвет ", ${valueService.getObjectValue(productDTOCells.colorValue)}, " р. ", ${valueService.getObjectValue(productDTOCells.clothingSizeValue)})`;
+
+    // const result = parser.parse(myFormula);
+    const result = formula.CONCATENATE(`${valueService.getObjectValue(productDTOCells.productView)}," ", ${valueService.getObjectValue(productDTOCells.trademark)}," ",${valueService.getObjectValue(productDTOCells.targetFloor)}," ",${valueService.getObjectValue(productDTOCells.articleType)}," ", ${valueService.getObjectValue(productDTOCells.articleValue)}, " цвет ", ${valueService.getObjectValue(productDTOCells.colorValue)}, " р. ", ${valueService.getObjectValue(productDTOCells.clothingSizeValue)}`);
+
+    console.log(result)
+
+    if (cellNameValue !== result) {
+        cellStyleService.setError(productDTOCells.name);
+        transportDTO.errorService.addBug(productDTOCells.name.address + " значение не соответствует формуле");
     }
 
-    productDTOCells.name.value = {formula: myFormula};
+    //  productDTOCells.name.value = {formula: myFormula};
 
     let newCellNameValue = valueService.getObjectValue(productDTOCells.name)
     if (typeof newCellNameValue === 'string' && newCellNameValue.length > 80) {
         cellStyleService.setError(productDTOCells.name);
-        ErrorService.addBug(productDTOCells.name.address + ' - количество символов больше 80');
+        transportDTO.errorService.addBug(productDTOCells.name.address + ' - количество символов больше 80');
     }
 }
 

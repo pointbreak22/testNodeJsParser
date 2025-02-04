@@ -1,10 +1,10 @@
 const valueService = require('../ValueService');
 const cellStyleService = require('../CellStyleService');
-const ErrorService = require('../ErrorService');
+// const transportDTO.errorService = require('../transportDTO.errorService');
 
 const configGender = require('../../../../config.json').Gender;
 
-async function checkTnvedCodes(cellsProductDTO, tnvedCodesData, isBaby) {
+async function checkTnvedCodes(cellsProductDTO, tnvedCodesData, isBaby, transportDTO) {
 
     let cellTnvedCodeValue = valueService.getObjectValue(cellsProductDTO.tnvedCode);
     let cellProductViewValue = valueService.getObjectValue(cellsProductDTO.productView);
@@ -13,19 +13,19 @@ async function checkTnvedCodes(cellsProductDTO, tnvedCodesData, isBaby) {
 
     if (cellTnvedCodeValue == null) {
         cellStyleService.setError(cellsProductDTO.tnvedCode);
-        ErrorService.addBug(cellsProductDTO.tnvedCode.address + ' - пустое значение');
+        transportDTO.errorService.addBug(cellsProductDTO.tnvedCode.address + ' - пустое значение');
         return;
     }
 
     if (cellTnvedCodeValue.length > 10 || cellTnvedCodeValue.length < 10) {
         cellStyleService.setError(cellsProductDTO.tnvedCode);
-        ErrorService.addBug(cellsProductDTO.tnvedCode.address + ' - количество символов ≠ 10');
+        transportDTO.errorService.addBug(cellsProductDTO.tnvedCode.address + ' - количество символов ≠ 10');
         return;
     }
 
     if (cellProductViewValue == null) {
         cellStyleService.setError(cellsProductDTO.productView);
-        ErrorService.addBug(cellsProductDTO.productView.address + ' - пустое значение');
+        transportDTO.errorService.addBug(cellsProductDTO.productView.address + ' - пустое значение');
         return;
     }
 
@@ -37,7 +37,7 @@ async function checkTnvedCodes(cellsProductDTO, tnvedCodesData, isBaby) {
             valueService.normalizedIncludes(item.gender, targetFloor));
         if (resultTnvedCode === undefined) {
             cellStyleService.setError(cellsProductDTO.tnvedCode);
-            ErrorService.addBug(cellsProductDTO.tnvedCode.address + ' - значение отсутствует в бд "codes_tnved_desc" или не соответствует условию');
+            transportDTO.errorService.addBug(cellsProductDTO.tnvedCode.address + ' - значение отсутствует в бд "codes_tnved_desc" или не соответствует условию');
         } else {
             resultTnvedCode.typeComposition = resultTnvedCode.typeComposition.replace(/:/g, '')
         }
@@ -67,7 +67,7 @@ async function checkTnvedCodes(cellsProductDTO, tnvedCodesData, isBaby) {
         }
 
     } else {
-        ErrorService.addError('Отсутствуют данные бд таблицы "codes_tnved_desc"');
+        transportDTO.errorService.addError('Отсутствуют данные бд таблицы "codes_tnved_desc"');
     }
 
 }

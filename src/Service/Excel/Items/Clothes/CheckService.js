@@ -14,42 +14,51 @@ const DTOService = require("./DTOService");
 
 const CheckAgeTypeService = require("../../CheckConditions/CheckAgeTypeService");
 
-function getClothesChecks(row, dbData) {
+function getClothesChecks(row, dbData, transportDTO) {
     const clotheDTO = DTOService.getClotheDTO(row);
     const isBaby = CheckAgeTypeService.isBaby(clotheDTO)
 
     return [
-        {name: "№1", promise: CheckNameService.checkNameMore80(clotheDTO)},
+        {name: "№1", promise: CheckNameService.checkNameMore80(clotheDTO, transportDTO)},
         {
             name: "№2",
-            promise: CheckTradeMarkService.checkTradeMarks(clotheDTO.trademark, dbData.banedTradeMarkData)
+            promise: CheckTradeMarkService.checkTradeMarks(clotheDTO.trademark, dbData.banedTradeMarkData, transportDTO)
         },
-        {name: "№3", promise: CheckModelService.checkTypeArticle(clotheDTO.articleType)},
-        {name: "№4", promise: CheckModelService.checkValueArticle(clotheDTO)},
-        {name: "№5", promise: CheckProductViewService.checkProductView(clotheDTO, dbData.productViewResult, isBaby)},
-        {name: "№6", promise: CheckColorService.checkColor(clotheDTO.colorValue, dbData.colorsDataResult)},
+        {name: "№3", promise: CheckModelService.checkTypeArticle(clotheDTO.articleType, transportDTO)},
+        {name: "№4", promise: CheckModelService.checkValueArticle(clotheDTO, transportDTO)},
+        {
+            name: "№5",
+            promise: CheckProductViewService.checkProductView(clotheDTO, dbData.productViewResult, isBaby, transportDTO)
+        },
+        {
+            name: "№6",
+            promise: CheckColorService.checkColor(clotheDTO.colorValue, dbData.colorsDataResult, transportDTO)
+        },
         {
             name: "№7",
-            promise: CheckGenderService.checkGender(clotheDTO.targetFloor, clotheDTO.standardNumber, dbData.genderData)
+            promise: CheckGenderService.checkGender(clotheDTO.targetFloor, clotheDTO.standardNumber, dbData.genderData, transportDTO)
         },
         // {name: "№8", promise: CheckSizeAdultService.checkSizeAdults(clotheDTO, dbData.sizesDataResult)}, //не работает
         {
             name: "№9",
-            promise: CheckCompositionService.checkComposition(clotheDTO.composition, dbData.compositionDataResult)
+            promise: CheckCompositionService.checkComposition(clotheDTO.composition, dbData.compositionDataResult, transportDTO)
         },
         {
             name: "№10",
-            promise: CheckTnvedCodesService.checkTnvedCodes(clotheDTO, dbData.tnvedCodesDataResult, isBaby)
+            promise: CheckTnvedCodesService.checkTnvedCodes(clotheDTO, dbData.tnvedCodesDataResult, isBaby, transportDTO)
         },
 
         {
             name: "№11",
-            promise: CheckStandartNumberService.checkStandard(clotheDTO, isBaby)
+            promise: CheckStandartNumberService.checkStandard(clotheDTO, isBaby, transportDTO)
         },
-
-        {name: "№12", promise: CheckCountryService.checkCountries(clotheDTO.country, dbData.countriesResult)},
-        {name: "№13", promise: CheckCountService.checkCellCount(clotheDTO.count)},
+        {
+            name: "№12",
+            promise: CheckCountryService.checkCountries(clotheDTO.country, dbData.countriesResult, transportDTO)
+        },
+        {name: "№13", promise: CheckCountService.checkCellCount(clotheDTO.count, transportDTO)},
     ];
+
 }
 
 module.exports = {getClothesChecks};
