@@ -24,6 +24,8 @@ async function runExelCheck(stream, type, transportDTO) {
         const dbData = await MySqlCoreService.fetchData();  // Получаем данные db
         const rows = [];
 
+        // Получаем ячейку C2
+        transportDTO.cellInn = sheetPage.getCell('C2');
         // Перебираем строки, начиная с первой
         sheetPage.eachRow((row, rowNumber) => {
             if (rowNumber >= 8) {

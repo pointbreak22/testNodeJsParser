@@ -15,6 +15,7 @@ function getClotheDTO(row) {
         standardNumber: row.getCell(14),    //N
         country: row.getCell(15),     //O
         count: row.getCell(16),     //P
+        declaration: row.getCell(19), //S
     };
 }
 

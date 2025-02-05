@@ -6,6 +6,8 @@ const CountryData = require('../../Repository/MySql/CountryRepository')
 const CompositionData = require('../../Repository/MySql/CompositionRepository')
 const TnvedCodesData = require('../../Repository/MySql/TnvedCodesRepository')
 const ProductViewData = require('../../Repository/MySql/ProductViewRepository')
+const TnvedShortData = require('../../Repository/MySql/TnvedShortRepository')
+const DeclarationData = require('../../Repository/MySql/DeclarationRepository')
 
 async function fetchData() {
     try {
@@ -19,6 +21,8 @@ async function fetchData() {
             CompositionData.getCompositionData(), // db compositions №9
             TnvedCodesData.getTnvedCodesData(), // db codes_tnved_desc №10
             CountryData.getCountryData(), //db Country №12
+            TnvedShortData.getTnvedShortData(), //db codes_tnved_short №1
+            DeclarationData.getDeclarationsData(), //db declarations №4а
 
         ]);
 
@@ -32,24 +36,31 @@ async function fetchData() {
             compositionDataResult,
             tnvedCodesDataResult,
             countriesResult,
+            tnvedShortDataResult,
+            declarationDataResult,
         ] = results;
 
         // Возвращаем объект, в котором данные таблиц являются свойствами
         return {
-
-            banedTradeMarkData: tradeMarkDataResult.status === 'fulfilled' ? tradeMarkDataResult.value : null,
-            productViewResult: productViewResult.status === 'fulfilled' ? productViewResult.value : null,
-            colorsDataResult: colorsDataResult.status === 'fulfilled' ? colorsDataResult.value : null,
-            genderData: genderDataResult.status === 'fulfilled' ? genderDataResult.value : null,
-            //   sizesDataResult: sizesDataResult.status === 'fulfilled' ? sizesDataResult.value : null,
-            compositionDataResult: compositionDataResult.status === 'fulfilled' ? compositionDataResult.value : null,
-            tnvedCodesDataResult: tnvedCodesDataResult.status === 'fulfilled' ? tnvedCodesDataResult.value : null,
-            countriesResult: countriesResult.status === 'fulfilled' ? countriesResult.value : null,
+            banedTradeMarkData: getPromiseValue(tradeMarkDataResult),
+            productViewResult: getPromiseValue(productViewResult),
+            colorsDataResult: getPromiseValue(colorsDataResult),
+            genderData: getPromiseValue(genderDataResult),
+            //   sizesDataResult: sizesDataResult
+            compositionDataResult: getPromiseValue(compositionDataResult),
+            tnvedCodesDataResult: getPromiseValue(tnvedCodesDataResult),
+            countriesResult: getPromiseValue(countriesResult),
+            tnvedShortDataResult: getPromiseValue(tnvedShortDataResult),
+            declarationDataResult: getPromiseValue(declarationDataResult),
         };
     } catch (error) {
         console.error('Ошибка при получении данных:', error);
         throw error;
     }
+}
+
+function getPromiseValue(promise) {
+    return promise.status === 'fulfilled' ? promise.value : null
 }
 
 module.exports = {

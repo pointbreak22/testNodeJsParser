@@ -24,11 +24,16 @@ class ErrorService {
     }
 
     getErrors() {
+        let mains = [...new Set(this.mains)];
+        if (mains.length > 1) {
+            mains.push("Разделить заявку, проставить корректные способы выпуска кодов")
+        }
+
         return {
             log: {
                 changes: [...new Set(this.changes)],
                 bugs: [...new Set(this.bugs)],
-                main: [...new Set(this.mains)],
+                main: mains,
             },
             errors: [...new Set(this.errors)],
         };

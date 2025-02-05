@@ -8,8 +8,10 @@ const CheckCountService = require("../../CheckConditions/CheckCountService");
 const CheckCountryService = require("../../CheckConditions/CheckCountryService");
 const CheckCompositionService = require("../../CheckConditions/CheckCompositionService");
 const CheckTnvedCodesService = require("../../CheckConditions/CheckTnvedCodesService");
-const CheckStandartNumberService = require("../../CheckConditions/CheckStandartNumberService");
+const CheckStandardNumberService = require("../../CheckConditions/CheckStandartNumberService");
 const CheckProductViewService = require("../../CheckConditions/CheckProductViewService");
+const CheckTnvedShortService = require("../../CheckConditions/CheckTnvedShortService");
+const CheckDeclarationService = require("../../CheckConditions/CheckDeclarationService");
 const DTOService = require("./DTOService");
 
 const CheckAgeTypeService = require("../../CheckConditions/CheckAgeTypeService");
@@ -50,13 +52,22 @@ function getClothesChecks(row, dbData, transportDTO) {
 
         {
             name: "№11",
-            promise: CheckStandartNumberService.checkStandard(clotheDTO, isBaby, transportDTO)
+            promise: CheckStandardNumberService.checkStandard(clotheDTO, isBaby, transportDTO)
         },
         {
             name: "№12",
             promise: CheckCountryService.checkCountries(clotheDTO.country, dbData.countriesResult, transportDTO)
         },
         {name: "№13", promise: CheckCountService.checkCellCount(clotheDTO.count, transportDTO)},
+        {
+            name: "№1A",
+            promise: CheckTnvedShortService.checkTnvedShortCodes(clotheDTO, dbData.tnvedShortDataResult, transportDTO)
+        },
+
+        {
+            name: "№4A",
+            promise: CheckDeclarationService.checkDeclarations(clotheDTO, dbData.declarationDataResult, transportDTO)
+        },
     ];
 
 }

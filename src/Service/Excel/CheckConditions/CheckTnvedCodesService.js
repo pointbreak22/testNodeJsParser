@@ -32,6 +32,8 @@ async function checkTnvedCodes(cellsProductDTO, tnvedCodesData, isBaby, transpor
     if (tnvedCodesData.tnvedDesc && tnvedCodesData.tnvedDesc.length > 0) {
 
         let targetFloor = configGender[cellTargetFloorValue] ? configGender[cellTargetFloorValue] : cellTargetFloorValue;
+
+        let typeComposition;
         let resultTnvedCode = tnvedCodesData.tnvedDesc.find(item => item.code.toString() === cellTnvedCodeValue.toString() &&
             valueService.normalizedIncludes(item.typeProduct, cellProductViewValue) &&
             valueService.normalizedIncludes(item.gender, targetFloor));
@@ -41,14 +43,13 @@ async function checkTnvedCodes(cellsProductDTO, tnvedCodesData, isBaby, transpor
         } else {
             resultTnvedCode.typeComposition = resultTnvedCode.typeComposition.replace(/:/g, '')
         }
-
         const resultComposition = tnvedCodesData.typesComposition.filter(item => valueService.normalizedIncludes(cellComposition, item.value))
-        // console.log(resultComposition);
+      
         let findCompositions = getMostFrequentComposition(resultComposition);
-        //
 
-        let typeComposition = findCompositions.find(value => valueService.normalizedIncludes(value, resultTnvedCode.typeComposition))
-        // console.log(typeComposition);
+        if (resultTnvedCode != null) {
+            typeComposition = findCompositions.find(value => valueService.normalizedIncludes(value, resultTnvedCode.typeComposition))
+        }
         if (typeComposition === undefined) {
 
             resultTnvedCode = tnvedCodesData.tnvedDesc.find(item => findCompositions.some(str => valueService.normalizedIncludes(str, item.typeComposition)) &&
@@ -59,9 +60,7 @@ async function checkTnvedCodes(cellsProductDTO, tnvedCodesData, isBaby, transpor
             } else {
                 cellsProductDTO.tnvedCode.value = resultTnvedCode.code;
                 cellStyleService.setEdit(cellsProductDTO.tnvedCode);
-
             }
-
         } else {
 
         }
