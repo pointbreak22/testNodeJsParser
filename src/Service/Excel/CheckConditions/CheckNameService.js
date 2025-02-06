@@ -9,6 +9,8 @@ const parser = new FormulaParser();
 
 async function checkNameMore80(productDTOCells, transportDTO) {
 
+    // console.log(transportDTO.options);
+
     if (OptionService.isDisable(transportDTO.options, "№1")) {
         return
     }
@@ -28,11 +30,9 @@ async function checkNameMore80(productDTOCells, transportDTO) {
     // const result = parser.parse(myFormula);
     const result = formula.CONCATENATE(`${valueService.getObjectValue(productDTOCells.productView)}," ", ${valueService.getObjectValue(productDTOCells.trademark)}," ",${valueService.getObjectValue(productDTOCells.targetFloor)}," ",${valueService.getObjectValue(productDTOCells.articleType)}," ", ${valueService.getObjectValue(productDTOCells.articleValue)}, " цвет ", ${valueService.getObjectValue(productDTOCells.colorValue)}, " р. ", ${valueService.getObjectValue(productDTOCells.clothingSizeValue)}`);
 
-    console.log(result)
-
     if (cellNameValue !== result) {
         cellStyleService.setError(productDTOCells.name);
-        transportDTO.errorService.addBug(productDTOCells.name.address + " значение не соответствует формуле");
+        transportDTO.errorService.addBug(productDTOCells.name.address + " - значение не соответствует формуле");
     }
 
     let newCellNameValue = valueService.getObjectValue(productDTOCells.name)

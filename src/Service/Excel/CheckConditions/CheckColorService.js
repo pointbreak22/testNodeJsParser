@@ -18,9 +18,9 @@ async function checkColor(cellColor, colorData, transportDTO) {
         const result = colorData.find(item => valueService.compareStrings(item.value, cellColorValue));
         if (result === undefined) {
             cellStyleService.setError(cellColor);
-            transportDTO.errorService.addBug(cellColor.address + ' - значение отсутствует в бд "colors"');
+            transportDTO.errorService.addBug(cellColor.address + ' - значение отсутствует в бд colors');
             if (USE_COMMENTS === true) {
-                cellColor.note = cellColor.address + ' - значение отсутствует в бд таблицы "colors"';
+                cellColor.note = cellColor.address + ' - значение отсутствует в бд таблицы colors';
             }
         }
     }

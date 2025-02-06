@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require("path");
 
 // Чтение файла и конвертация в Base64
-const filePath = path.join(process.cwd(), 'testFiles/testFileExel2.xlsx');  // Укажите путь к файлу
+const filePath = path.join(process.cwd(), 'testFiles/testFileExel6.xlsx');  // Укажите путь к файлу
 const fileBuffer = fs.readFileSync(filePath);
 const fileBase64 = fileBuffer.toString('base64');
 
@@ -17,7 +17,7 @@ fetch('http://localhost:3000/check-file', {
         type: 'clothes',
         base64: fileBase64,  // Передайте строку Base64
         options: {
-            condition_1: "disable",
+            // condition_1: "disable",
         }
     }),
 })

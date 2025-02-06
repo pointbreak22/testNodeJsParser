@@ -22,10 +22,10 @@ async function checkProductView(productDTOCells, productViewData, isBaby, transp
         );
         if (result === undefined) {
             cellStyleService.setError(productDTOCells.productView);
-            transportDTO.errorService.addBug(productDTOCells.productView.address + ' - значение не соответствует условию или отсутствует в бд таблицы "types_clothing"');
+            transportDTO.errorService.addBug(productDTOCells.productView.address + ' - значение не соответствует условию или отсутствует в бд таблицы types_clothing');
         }
     } else {
-        transportDTO.errorService.addError('Отсутствуют данные бд таблицы "types_clothing"');
+        transportDTO.errorService.addError('Отсутствуют данные бд таблицы types_clothing');
     }
 }
 

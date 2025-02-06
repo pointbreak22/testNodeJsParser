@@ -18,7 +18,7 @@ async function checkTradeMarks(cellTradeMark, bannedTradeMarkData, transportDTO)
             transportDTO.errorService.addBug(cellTradeMark.address + ' - значение ' + cellTradeMarkValue + ' в черном списке');
         }
     } else {
-        transportDTO.errorService.addError('Отсутствуют данные бд таблицы "banned_brands"');
+        transportDTO.errorService.addError('Отсутствуют данные бд таблицы banned_brands');
     }
 
 }

@@ -12,10 +12,16 @@ router.post('/check-file', async (req, res) => {
     try {
         console.log("запрос пришел");
 
+        // console.log(options);
+        //
+        // res.status(200).send(options);
+        //
+        // return;
         let transportDTO = {
             errorService: new ErrorService(),
             options: options
         }
+
         // Обработка данных
         if (!type || !base64) {
             return res.status(200).send('Данные отсутствуют');

@@ -12,7 +12,7 @@ async function checkStandard(productDTOCells, isBaby, transportDTO) {
             productDTOCells.standardNumber.value = 'ТР ТС 007/2011 “О ' +
                 'безопасности продукции, предназначенной для детей и подростков”';
             cellStyleService.setEdit(productDTOCells.standardNumber)
-            transportDTO.errorService.addChange(productDTOCells.standardNumber.address + " значение изменено");
+            transportDTO.errorService.addChange(productDTOCells.standardNumber.address + " - значение изменено");
 
         }
 
@@ -21,7 +21,7 @@ async function checkStandard(productDTOCells, isBaby, transportDTO) {
             productDTOCells.standardNumber.value = 'ТР ТС 017/2011 “О ' +
                 'безопасности продукции легкой промышленности”';
             cellStyleService.setEdit(productDTOCells.standardNumber)
-            transportDTO.errorService.addChange(productDTOCells.standardNumber.address + " значение изменено");
+            transportDTO.errorService.addChange(productDTOCells.standardNumber.address + " - значение изменено");
         }
     }
 

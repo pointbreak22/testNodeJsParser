@@ -39,7 +39,7 @@ async function checkDeclarations(productDTO, declarationDataResult, transportDTO
         }
 
     } else {
-        transportDTO.errorService.addError('Отсутствуют данные бд таблицы "declarations"');
+        transportDTO.errorService.addError('Отсутствуют данные бд таблицы declarations');
     }
 }
 

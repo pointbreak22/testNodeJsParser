@@ -12,6 +12,7 @@ async function checkGender(cellGender, cellStandardNumber, genderData, transport
         transportDTO.errorService.addBug(cellGender.address + ' - пустое значение');
         return;
     }
+
     if (genderData && genderData.length > 0) {
         const result = genderData.find(item => item.value === cellGenderValue);
         if (result !== undefined) {
@@ -19,16 +20,16 @@ async function checkGender(cellGender, cellStandardNumber, genderData, transport
             if (configGender[result.value.toLowerCase()]) {
                 cellGender.value = configGender[result.value];
                 cellStyleService.setEdit(cellGender);
-                transportDTO.errorService.addChange(cellGender.address + ' значение изменено');
+                transportDTO.errorService.addChange(cellGender.address + ' - значение изменено');
             }
 
         } else {
             cellStyleService.setError(cellGender);
-            transportDTO.errorService.addBug(cellGender.address + ' - указано не верное значение отсутствующее в бд таблицы "genders"');
+            transportDTO.errorService.addBug(cellGender.address + ' - указано неверное значение отсутствующее в бд таблицы genders');
         }
 
     } else {
-        transportDTO.errorService.addError('Отсутствуют данные в бд таблицы "genders"');
+        transportDTO.errorService.addError('Отсутствуют данные в бд таблицы genders');
     }
 }
 

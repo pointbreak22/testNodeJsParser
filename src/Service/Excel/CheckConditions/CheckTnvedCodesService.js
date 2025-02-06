@@ -39,12 +39,12 @@ async function checkTnvedCodes(cellsProductDTO, tnvedCodesData, isBaby, transpor
             valueService.normalizedIncludes(item.gender, targetFloor));
         if (resultTnvedCode === undefined) {
             cellStyleService.setError(cellsProductDTO.tnvedCode);
-            transportDTO.errorService.addBug(cellsProductDTO.tnvedCode.address + ' - значение отсутствует в бд "codes_tnved_desc" или не соответствует условию');
+            transportDTO.errorService.addBug(cellsProductDTO.tnvedCode.address + ' - значение отсутствует в бд codes_tnved_desc или не соответствует условию');
         } else {
             resultTnvedCode.typeComposition = resultTnvedCode.typeComposition.replace(/:/g, '')
         }
         const resultComposition = tnvedCodesData.typesComposition.filter(item => valueService.normalizedIncludes(cellComposition, item.value))
-      
+
         let findCompositions = getMostFrequentComposition(resultComposition);
 
         if (resultTnvedCode != null) {

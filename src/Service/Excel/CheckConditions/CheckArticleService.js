@@ -22,20 +22,20 @@ async function checkValueArticle(productDTOCells, transportDTO) {
     let articleValue = valueService.getObjectValue(productDTOCells.articleValue);
     if (articleValue == null) {
         cellStyleService.setError(productDTOCells.articleValue)
-        transportDTO.errorService.addBug(productDTOCells.articleValue.address + ' -  пустое значение');
+        transportDTO.errorService.addBug(productDTOCells.articleValue.address + ' - пустое значение');
     }
 
     for (let item of list) {
         if (item != null && valueService.normalizedIncludes(articleValue, item)) {
             cellStyleService.setError(productDTOCells.articleValue)
-            transportDTO.errorService.addBug(productDTOCells.articleValue.address + ' -  ячейка содержит дублированное значение');
+            transportDTO.errorService.addBug(productDTOCells.articleValue.address + ' - ячейка содержит дублированное значение');
             break;
         }
     }
     let color = valueService.getObjectValue(productDTOCells.colorValue);
     if (color != null && valueService.normalizedSliceIncludes(articleValue, color)) {
         cellStyleService.setError(productDTOCells.articleValue)
-        transportDTO.errorService.addBug(productDTOCells.articleValue.address + ' -  ячейка содержит цвет');
+        transportDTO.errorService.addBug(productDTOCells.articleValue.address + ' - ячейка содержит цвет');
     }
 }
 

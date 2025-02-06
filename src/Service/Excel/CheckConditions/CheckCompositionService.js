@@ -69,11 +69,11 @@ async function checkComposition(cellComposition, compositionData, transportDTO) 
         }
         // Проверки
         else if (materialCount !== percentages.length || sum % 100 !== 0) {
-            transportDTO.errorService.addBug(`${cellComposition.address} - ошибка в составе, или отсутствует материал в бд таблицы "compositions"`);
+            transportDTO.errorService.addBug(`${cellComposition.address} - ошибка в составе или отсутствует материал в бд таблицы compositions`);
             cellStyleService.setError(cellComposition);
         }
     } else {
-        transportDTO.errorService.addError('Отсутствуют данные бд таблицы "compositions"');
+        transportDTO.errorService.addError('Отсутствуют данные бд таблицы compositions');
     }
 
 }
