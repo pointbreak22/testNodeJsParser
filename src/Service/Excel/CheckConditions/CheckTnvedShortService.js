@@ -14,7 +14,7 @@ async function checkTnvedShortCodes(productDTO, tnvedShortDataResult, transportD
             cellStyleService.setEdit(cellTnvedShort);
         } else if (cellTnvedShortValue == null || valueService.anCompareStrings(cellTnvedCodeValue.toString().slice(0, 4), cellTnvedShortValue)) {
             cellTnvedShort.value = cellTnvedCodeValue.toString().slice(0, 4);
-            transportDTO.errorService.addChange(cellTnvedShort.address + ' - неверное значение')
+            transportDTO.errorService.addChange(cellTnvedShort.address + ' - значение изменено')
             cellStyleService.setEdit(cellTnvedShort);
         }
 

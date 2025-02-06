@@ -7,7 +7,7 @@ function getObjectValue(variable) {
     }
 }
 
-const normalize = (s) => (s ?? '').toString().toLowerCase().replace(/ё/g, 'е');
+const normalize = (s) => (s ?? '').toString().trim().toLowerCase().replace(/ё/g, 'е').replace(/:/g, '');
 
 function compareStrings(str1, str2) {
     return normalize(str1) === normalize(str2);

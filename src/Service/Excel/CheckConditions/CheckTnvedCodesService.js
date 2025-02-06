@@ -41,7 +41,7 @@ async function checkTnvedCodes(cellsProductDTO, tnvedCodesData, isBaby, transpor
             cellStyleService.setError(cellsProductDTO.tnvedCode);
             transportDTO.errorService.addBug(cellsProductDTO.tnvedCode.address + ' - значение отсутствует в бд codes_tnved_desc или не соответствует условию');
         } else {
-            resultTnvedCode.typeComposition = resultTnvedCode.typeComposition.replace(/:/g, '')
+            // resultTnvedCode.typeComposition = resultTnvedCode.typeComposition
         }
         const resultComposition = tnvedCodesData.typesComposition.filter(item => valueService.normalizedIncludes(cellComposition, item.value))
 
@@ -52,7 +52,7 @@ async function checkTnvedCodes(cellsProductDTO, tnvedCodesData, isBaby, transpor
         }
         if (typeComposition === undefined) {
 
-            resultTnvedCode = tnvedCodesData.tnvedDesc.find(item => findCompositions.some(str => valueService.normalizedIncludes(str, item.typeComposition)) &&
+            resultTnvedCode = tnvedCodesData.tnvedDesc.find(item => findCompositions.some(str => valueService.normalizedIncludes(str, item.typeComposition) || valueService.normalizedIncludes(item.typeComposition, str)) &&
                 valueService.normalizedIncludes(item.typeProduct, cellProductViewValue) &&
                 valueService.normalizedIncludes(item.gender, targetFloor));
             if (resultTnvedCode === undefined) {

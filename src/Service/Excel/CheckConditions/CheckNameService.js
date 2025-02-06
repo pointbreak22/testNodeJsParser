@@ -23,16 +23,21 @@ async function checkNameMore80(productDTOCells, transportDTO) {
 
     if (productDTOCells.name.value instanceof Object && productDTOCells.name.value.formula != null) {
         productDTOCells.name.value = {formula: productDTOCells.name.value.formula};
+        //cellNameValue = valueService.getObjectValue(productDTOCells.name);
+        //    console.log(productDTOCells.name.value);
 
     }
     //   let myFormula = `CONCATENATE(${valueService.getObjectValue(productDTOCells.productView)}," ", ${valueService.getObjectValue(productDTOCells.trademark)}," ",${valueService.getObjectValue(productDTOCells.targetFloor)}," ",${valueService.getObjectValue(productDTOCells.articleType)}," ", ${valueService.getObjectValue(productDTOCells.articleValue)}, " цвет ", ${valueService.getObjectValue(productDTOCells.colorValue)}, " р. ", ${valueService.getObjectValue(productDTOCells.clothingSizeValue)})`;
 
     // const result = parser.parse(myFormula);
-    const result = formula.CONCATENATE(`${valueService.getObjectValue(productDTOCells.productView)}," ", ${valueService.getObjectValue(productDTOCells.trademark)}," ",${valueService.getObjectValue(productDTOCells.targetFloor)}," ",${valueService.getObjectValue(productDTOCells.articleType)}," ", ${valueService.getObjectValue(productDTOCells.articleValue)}, " цвет ", ${valueService.getObjectValue(productDTOCells.colorValue)}, " р. ", ${valueService.getObjectValue(productDTOCells.clothingSizeValue)}`);
+    const result = formula.CONCATENATE(`${valueService.getObjectValue(productDTOCells.productView)} ${valueService.getObjectValue(productDTOCells.trademark)} ${valueService.getObjectValue(productDTOCells.targetFloor)} ${valueService.getObjectValue(productDTOCells.articleType)} ${valueService.getObjectValue(productDTOCells.articleValue)} цвет ${valueService.getObjectValue(productDTOCells.colorValue)} р. ${valueService.getObjectValue(productDTOCells.clothingSizeValue)}`);
 
+    //console.log(cellNameValue, result);
     if (cellNameValue !== result) {
+        console.log(cellNameValue, result);
         cellStyleService.setError(productDTOCells.name);
         transportDTO.errorService.addBug(productDTOCells.name.address + " - значение не соответствует формуле");
+
     }
 
     let newCellNameValue = valueService.getObjectValue(productDTOCells.name)

@@ -14,7 +14,8 @@ async function checkGender(cellGender, cellStandardNumber, genderData, transport
     }
 
     if (genderData && genderData.length > 0) {
-        const result = genderData.find(item => item.value === cellGenderValue);
+        const result = genderData.find(item => valueService.compareStrings(item.value, cellGenderValue));
+
         if (result !== undefined) {
 
             if (configGender[result.value.toLowerCase()]) {
@@ -24,8 +25,9 @@ async function checkGender(cellGender, cellStandardNumber, genderData, transport
             }
 
         } else {
+            //console.log(result);
             cellStyleService.setError(cellGender);
-            transportDTO.errorService.addBug(cellGender.address + ' - указано неверное значение отсутствующее в бд таблицы genders');
+            transportDTO.errorService.addBug(cellGender.address + ' - значение отсутствует в бд таблицы genders');
         }
 
     } else {
